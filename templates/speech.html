@@ -14,19 +14,17 @@
         .header a:hover { color: #4a7c59; }
         .flag-strip { height: 3px; background: linear-gradient(90deg, #4a7c59 33%, white 33%, white 66%, #8b3c3c 66%); max-width: 150px; margin: 5px auto; }
         input, textarea, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .btn { padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 1rem; }
-        .btn-ai { background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; }
-        .btn-normal { background: #4a7c59; color: white; }
+        .btn { padding: 15px; border: none; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; font-size: 1.1rem; }
+        .btn-generate { background: #4a7c59; color: white; }
         .btn-copy { background: #f59e0b; color: black; margin-top: 10px; }
-        .speech-box { background: #f9f9f9; padding: 30px; border-radius: 15px; line-height: 2.8; white-space: pre-wrap; border: 2px solid #4a7c59; }
-        .ai-badge { background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; }
+        .speech-box { background: #f9f9f9; padding: 30px; border-radius: 15px; line-height: 2.8; white-space: pre-wrap; border: 2px solid #4a7c59; font-size: 1rem; }
     </style>
 </head>
 <body>
     <div class="header">
         <div style="font-size:2rem;">🇮🇷</div>
         <div class="flag-strip"></div>
-        <h2>🎤 تولید سخنرانی</h2>
+        <h2>🎤 تولید سخنرانی حرفه‌ای</h2>
         <a href="/">📊 داشبورد</a> | 
         <a href="/map">🗺️ نقشه</a> | 
         <a href="/contacts">📞 تلفن</a> |
@@ -38,24 +36,32 @@
         <div class="card" style="flex:1; min-width:350px;">
             <h4 style="color:#4a7c59;">📝 اطلاعات روستا</h4>
             <form method="POST">
-                <input type="text" name="village_name" placeholder="🏘️ نام روستا *" required>
+                <label>🏘️ نام روستا *</label>
+                <input type="text" name="village_name" required>
+                
+                <label>📍 بخش</label>
                 <select name="section">
-                    <option value="مرکزی">بخش مرکزی</option>
-                    <option value="صوفیان">بخش صوفیان</option>
-                    <option value="تسوج">بخش تسوج</option>
+                    <option value="مرکزی">مرکزی</option>
+                    <option value="صوفیان">صوفیان</option>
+                    <option value="تسوج">تسوج</option>
                 </select>
-                <input type="text" name="martyrs" placeholder="🏴 شهدا (با کاما)">
-                <textarea name="capacities" rows="3" placeholder="⭐ ظرفیت‌ها (هر کدام در یک خط)"></textarea>
-                <textarea name="problems" rows="3" placeholder="❌ مشکلات (هر کدام در یک خط)"></textarea>
-                <input type="text" name="key_people" placeholder="👥 افراد حاضر">
-                <input type="text" name="opponent" placeholder="🎯 نام رقیب">
                 
-                <label style="display:flex; align-items:center; gap:10px; margin:10px 0; cursor:pointer;">
-                    <input type="checkbox" name="use_ai" style="width:auto;"> 
-                    <span class="ai-badge">🤖 استفاده از هوش مصنوعی</span>
-                </label>
+                <label>🏴 نام شهدا</label>
+                <input type="text" name="martyrs" placeholder="با کاما جدا کنید">
                 
-                <button type="submit" class="btn btn-ai">🤖 تولید با هوش مصنوعی</button>
+                <label>⭐ ظرفیت‌ها</label>
+                <textarea name="capacities" rows="3" placeholder="هر کدام در یک خط"></textarea>
+                
+                <label>❌ مشکلات</label>
+                <textarea name="problems" rows="3" placeholder="هر کدام در یک خط"></textarea>
+                
+                <label>👥 افراد حاضر در جلسه</label>
+                <input type="text" name="key_people" placeholder="نام و سمت افراد">
+                
+                <label>🎯 نام کاندیدای رقیب</label>
+                <input type="text" name="opponent">
+                
+                <button type="submit" class="btn btn-generate">🚀 تولید سخنرانی حرفه‌ای</button>
             </form>
         </div>
         
@@ -63,13 +69,13 @@
             {% if generated %}
             <h4 style="color:#4a7c59;">✅ متن سخنرانی</h4>
             <div class="speech-box" id="speechText">{{ speech }}</div>
-            <button class="btn btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('speechText').innerText);alert('✅ کپی شد!')">📋 کپی</button>
-            <a href="/speech"><button class="btn btn-normal" style="margin-top:5px;">🔄 جدید</button></a>
+            <button class="btn btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('speechText').innerText);alert('✅ کپی شد!')">📋 کپی متن</button>
+            <a href="/speech"><button class="btn btn-generate" style="margin-top:5px; background:#666;">🔄 سخنرانی جدید</button></a>
             {% else %}
             <div style="text-align:center; padding:50px; color:#999;">
                 <div style="font-size:5rem;">🎤</div>
                 <h3>متن سخنرانی اینجا نمایش داده می‌شود</h3>
-                <p>اطلاعات را وارد کنید و دکمه را بزنید</p>
+                <p>اطلاعات روستا را وارد کنید</p>
             </div>
             {% endif %}
         </div>
