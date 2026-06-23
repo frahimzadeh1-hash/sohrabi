@@ -208,55 +208,116 @@ def village_profile(village_name):
 @app.route('/speech', methods=['GET', 'POST'])
 def generate_speech():
     if request.method == 'POST':
+        import requests
+        
         village_name = request.form.get('village_name', 'روستای عزیز')
         section = request.form.get('section', 'شبستر')
         martyrs = request.form.get('martyrs', '')
         capacities = request.form.get('capacities', '')
         problems = request.form.get('problems', '')
         key_people = request.form.get('key_people', '')
-        cap_list = [c.strip() for c in capacities.split('\n') if c.strip()]
-        prob_list = [p.strip() for p in problems.split('\n') if p.strip()]
-        cap_text = "\n".join([f"        {i}. {cap}" for i, cap in enumerate(cap_list, 1)])
-        prob_text = "\n".join([f"        {i}. {prob}" for i, prob in enumerate(prob_list, 1)])
+        opponent = request.form.get('opponent', '')
         
-        speech = f"""
+        # ساخت prompt برای AI
+        prompt = f"""یک سخنرانی انتخاباتی حرفه‌ای، احساسی و تأثیرگذار برای دکتر سهرابی کاندیدای نمایندگی شهرستان شبستر بنویس.
+        
+اطلاعات روستا:
+- نام روستا: {village_name}
+- بخش: {section}
+- شهدا: {martyrs if martyrs else 'ندارد'}
+- ظرفیت‌ها: {capacities if capacities else 'در حال تکمیل'}
+- مشکلات: {problems if problems else 'در حال تکمیل'}
+- افراد حاضر: {key_people if key_people else 'مردم شریف روستا'}
+- رقیب: {opponent if opponent else 'ندارد'}
+
+سبک سخنرانی:
+- با بسم الله و سلام و درود شروع شود
+- یاد شهدا گرامی داشته شود
+- به ظرفیت‌های روستا اشاره شود
+- مشکلات با همدردی بیان شود
+- برنامه‌های عملی دکتر سهرابی ذکر شود
+- از رقیب به صورت غیرمستقیم انتقاد شود
+- پایان حماسی و امیدوارکننده باشد
+- لحن صمیمی، مردمی، متعهد و حرفه‌ای
+- حداکثر ۴۰۰ کلمه"""
+
+        speech = ""
+        use_ai = request.form.get('use_ai', 'off') == 'on'
+        
+        if use_ai:
+            try:
+                # Hugging Face API
+                API_URL = "https://api-inference.huggingface.co/models/google/gemma-2-2b-it"
+                headers = {"Authorization": "Bearer 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"}
+                
+                payload = {
+                    "inputs": f"<start_of_turn>user\n{prompt}<end_of_turn>\n<start_of_turn>model\n",
+                    "parameters": {"max_new_tokens": 500, "temperature": 0.7}
+                }
+                
+                response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    if isinstance(result, list) and len(result) > 0:
+                        speech = result[0].get('generated_text', '')
+                        # پاکسازی خروجی
+                        if '<start_of_turn>model' in speech:
+                            speech = speech.split('<start_of_turn>model')[-1].strip()
+                        speech = speech.replace('<end_of_turn>', '').strip()
+                    else:
+                        speech = "⚠️ خطا در تولید متن. لطفاً دوباره تلاش کنید."
+                else:
+                    # اگه مدل آماده نیست، fallback به قالب دستی
+                    use_ai = False
+            except Exception as e:
+                use_ai = False
+        
+        if not use_ai or not speech:
+            # قالب دستی
+            speech = f"""
 بسم الله الرحمن الرحیم
 
 السلام علیکم و رحمة الله و برکاته
 
 خدمت تکتک شما مردم شریف، نجیب و بزرگوار روستای {village_name}، سلام و درود میفرستم."""
-        
-        if martyrs:
-            speech += f"""
+            
+            if martyrs:
+                speech += f"""
 
-🏴 یاد و خاطره شهدای گرانقدر این روستا را گرامی میداریم:
-{martyrs}
-از خداوند متعال برای این عزیزان علو درجات مسئلت داریم."""
-        
-        speech += f"""
+🏴 قبل از هر چیز، یاد و خاطره شهدای گرانقدر این روستا را گرامی میداریم: {martyrs}
+از خداوند متعال برای این عزیزان علو درجات و برای خانواده‌های معززشان صبر و اجر مسئلت داریم."""
+            
+            if capacities:
+                speech += f"""
 
-⭐ ظرفیت های بی نظیر {village_name}:
-{cap_text if cap_text else "        • نیروی انسانی پرتلاش"}
+⭐ ظرفیت‌های بی‌نظیر {village_name}:
+{capacities}"""
+            
+            if problems:
+                speech += f"""
 
 ❌ مشکلاتی که باید حل شوند:
-{prob_text if prob_text else "        • کمبود زیرساخت ها"}
+{problems}
+من این مشکلات را از نزدیک لمس کرده‌ام و برنامه عملی برای حل آنها دارم."""
+            
+            speech += f"""
 
-💡 برنامه من برای {village_name}:
-۱. ایجاد صندوق حمایت از کشاورزان
-۲. راه اندازی صنایع تبدیلی
-۳. پیگیری ویژه برای حل مشکل آب
-۴. حمایت از کسب و کارهای خانگی
-۵. ایجاد سامانه اشتغال برای جوانان
+💡 برنامه‌های دکتر سهرابی برای {village_name}:
+۱. ایجاد صندوق حمایت از کشاورزان و باغداران
+۲. راه‌اندازی صنایع تبدیلی و بسته‌بندی
+۳. پیگیری ویژه برای حل مشکلات آب و زیرساخت
+۴. حمایت از کسب‌وکارهای خانگی و اشتغال جوانان
+۵. حضور مستمر و پاسخگویی به مردم
 
-🚀 مردم {village_name}، انتخابات پیش رو فقط انتخاب یک نماینده نیست.
-دستم را بگیرید تا با هم {village_name} را بسازیم.
+🚀 مردم شریف {village_name}، انتخابات پیش رو انتخاب بین ادامه وضع موجود و یک شروع تازه است. با هم می‌سازیم!
 
 با احترام
 دکتر سهرابی - خادم مردم شریف شهرستان شبستر 🇮🇷"""
         
         return render_template('speech.html', speech=speech, generated=True)
+    
     return render_template('speech.html', generated=False)
-
 @app.route('/contacts')
 def contacts():
     villages = load_data()
