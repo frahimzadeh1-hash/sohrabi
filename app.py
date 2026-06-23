@@ -133,6 +133,7 @@ def index():
     good = sum(1 for v in villages if v['status'] == 'good')
     warning = sum(1 for v in villages if v['status'] == 'warning')
     danger = sum(1 for v in villages if v['status'] == 'danger')
+    
     sections = {}
     for v in villages:
         sec = v['section']
@@ -141,10 +142,57 @@ def index():
         sections[sec]['count'] += 1
         sections[sec]['population'] += v['population']
         sections[sec]['votes'] += v['avg_vote']
-    return render_template('index.html', total_villages=total_villages, total_population=total_population,
-                         total_households=total_households, total_avg_vote=total_avg_vote,
-                         good=good, warning=warning, danger=danger, sections=sections, villages=villages)
-
+    
+    # جمع‌آوری تماس‌های امروز
+    from datetime import datetime
+    today = datetime.now().strftime('%Y/%m/%d')
+    today_persian = today.replace('2026', '۱۴۰۴').replace('2025', '۱۴۰۴')
+    
+    today_calls = []
+    total_contacts = 0
+    moafeg = 0
+    mordad = 0
+    mokhalef = 0
+    
+    for v in villages:
+        for inf in v.get('influencers', []):
+            total_contacts += 1
+            if inf.get('status') == 'موافق':
+                moafeg += 1
+            elif inf.get('status') == 'مردد':
+                mordad += 1
+            elif inf.get('status') == 'مخالف':
+                mokhalef += 1
+            
+            # تماس‌های امروز
+            if inf.get('next_call_date') == today_persian:
+                today_calls.append({
+                    'village': v['name'],
+                    'section': v['section'],
+                    'name': inf['name'],
+                    'phone': inf['phone'],
+                    'role': inf['role'],
+                    'status': inf.get('status', ''),
+                    'last_call_date': inf.get('last_call_date', ''),
+                    'last_call_result': inf.get('last_call_result', ''),
+                    'referrer': inf.get('referrer', ''),
+                    'referrer_phone': inf.get('referrer_phone', '')
+                })
+    
+    return render_template('index.html',
+                         total_villages=total_villages,
+                         total_population=total_population,
+                         total_households=total_households,
+                         total_avg_vote=total_avg_vote,
+                         good=good, warning=warning, danger=danger,
+                         sections=sections,
+                         villages=villages,
+                         today_calls=today_calls,
+                         today_date=today_persian,
+                         total_contacts=total_contacts,
+                         moafeg=moafeg,
+                         mordad=mordad,
+                         mokhalef=mokhalef)
 @app.route('/map')
 def map_view():
     return render_template('map.html', villages=load_data())
