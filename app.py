@@ -12,7 +12,7 @@ CITIES_FILE = os.path.join('data', 'cities_data.json')
 WORKGROUPS_FILE = os.path.join('data', 'workgroups_data.json')
 
 # ============================================
-# داده‌های پیش‌فرض
+# داده‌های پیش‌فرض (کوتاه شده برای تست)
 # ============================================
 DEFAULT_VILLAGES = [
     {
@@ -20,77 +20,20 @@ DEFAULT_VILLAGES = [
         'martyrs': 'شهید رحیمی، شهید عباس‌زاده', 'lat': 38.2850, 'lng': 45.7750, 'status': 'good',
         'capacities': 'باغات سیب\nچشمه معدنی\nفرش دستباف',
         'problems': 'کمبود آب\nنبود سردخانه\nمهاجرت جوانان', 'avg_vote': 850, 'opponent': 'فلاحی',
-        'influencers': [
-            {'name': 'حاج رضا محمدی', 'phone': '09141234567', 'role': 'رئیس شورا', 'status': 'موافق', 'section': 'مرکزی', 'city': 'شبستر', 'village': 'اندبیل', 'workgroup': 'کشاورزان', 'referrer': 'خودم', 'referrer_phone': '09140000000', 'last_call_date': '1404/12/15', 'last_call_result': 'قرار ملاقات', 'next_call_date': '1404/12/20'},
-            {'name': 'خانم زهرا حسینی', 'phone': '09149876543', 'role': 'مدیر کارگاه فرش', 'status': 'مردد', 'section': 'مرکزی', 'city': 'شبستر', 'village': 'اندبیل', 'workgroup': 'بانوان', 'referrer': 'حاج رضا محمدی', 'referrer_phone': '09141234567', 'last_call_date': '1404/12/10', 'last_call_result': 'نیاز به صحبت', 'next_call_date': '1404/12/18'},
-            {'name': 'علی نادری', 'phone': '09365543210', 'role': 'مربی فوتبال', 'status': 'مخالف', 'section': 'مرکزی', 'city': 'شبستر', 'village': 'اندبیل', 'workgroup': 'ورزشکاران', 'referrer': '', 'referrer_phone': '', 'last_call_date': '', 'last_call_result': '', 'next_call_date': ''}
-        ]
-    },
-    {
-        'id': 2, 'name': 'تسوج', 'section': 'تسوج', 'population': 8000, 'households': 2200,
-        'martyrs': 'شهید قاسمی، شهید اکبری', 'lat': 38.3200, 'lng': 45.3600, 'status': 'warning',
-        'capacities': 'باغات زردآلو\nگردشگری آبگرم\nصنایع دستی',
-        'problems': 'کمبود صنایع تبدیلی\nمهاجرت تحصیل‌کردگان\nضعف زیرساخت گردشگری', 'avg_vote': 3200, 'opponent': 'فلاحی',
-        'influencers': [
-            {'name': 'حاج اکبر تسوجی', 'phone': '09141234568', 'role': 'معتمد محلی', 'status': 'موافق', 'section': 'تسوج', 'city': 'تسوج', 'village': 'تسوج', 'workgroup': 'اصناف', 'referrer': 'خودم', 'referrer_phone': '09140000000', 'last_call_date': '1404/12/12', 'last_call_result': 'حامی قطعی', 'next_call_date': '1404/12/22'},
-            {'name': 'دکتر امینی', 'phone': '09149876544', 'role': 'پزشک', 'status': 'مردد', 'section': 'تسوج', 'city': 'تسوج', 'village': 'تسوج', 'workgroup': 'فرهنگیان', 'referrer': 'حاج اکبر', 'referrer_phone': '09141234568', 'last_call_date': '', 'last_call_result': '', 'next_call_date': '1404/12/18'}
-        ]
-    },
-    {
-        'id': 3, 'name': 'صوفیان', 'section': 'صوفیان', 'population': 10000, 'households': 2800,
-        'martyrs': 'شهید رضایی، شهید موسوی', 'lat': 38.2500, 'lng': 45.9800, 'status': 'danger',
-        'capacities': 'شهرک صنعتی\nترانزیت ریلی\nتولید مصالح ساختمانی',
-        'problems': 'ترافیک سنگین\nآلودگی هوا\nکمبود فضای سبز', 'avg_vote': 4100, 'opponent': 'فلاحی',
-        'influencers': [
-            {'name': 'مهندس صوفیانی', 'phone': '09141234569', 'role': 'فعال صنعتی', 'status': 'مخالف', 'section': 'صوفیان', 'city': 'صوفیان', 'village': 'صوفیان', 'workgroup': 'اصناف', 'referrer': '', 'referrer_phone': '', 'last_call_date': '', 'last_call_result': '', 'next_call_date': '1404/12/17'},
-            {'name': 'حاجیه خانم رضوی', 'phone': '09149876545', 'role': 'خیر', 'status': 'موافق', 'section': 'صوفیان', 'city': 'صوفیان', 'village': 'صوفیان', 'workgroup': 'بانوان', 'referrer': 'خودم', 'referrer_phone': '09140000000', 'last_call_date': '1404/12/14', 'last_call_result': 'حامی مالی', 'next_call_date': ''}
-        ]
-    },
-    {
-        'id': 4, 'name': 'شرفخانه', 'section': 'تسوج', 'population': 3500, 'households': 950,
-        'martyrs': 'شهید بحری', 'lat': 38.1800, 'lng': 45.4800, 'status': 'danger',
-        'capacities': 'بندر شرفخانه\nگردشگری ساحلی\nماهیگیری',
-        'problems': 'خشک شدن دریاچه ارومیه\nبیکاری\nنابودی گردشگری', 'avg_vote': 1400, 'opponent': 'فلاحی',
-        'influencers': [
-            {'name': 'کاپیتان بحری', 'phone': '09141234570', 'role': 'صیاد', 'status': 'موافق', 'section': 'تسوج', 'city': 'شرفخانه', 'village': 'شرفخانه', 'workgroup': 'کشاورزان', 'referrer': 'خودم', 'referrer_phone': '09140000000', 'last_call_date': '1404/12/16', 'last_call_result': 'قرار با صیادان', 'next_call_date': '1404/12/19'}
-        ]
-    },
-    {
-        'id': 5, 'name': 'وایقان', 'section': 'مرکزی', 'population': 5000, 'households': 1400,
-        'martyrs': 'شهید شیرینی', 'lat': 38.2200, 'lng': 45.7100, 'status': 'good',
-        'capacities': 'شهر ملی باسلوق\nشیرینی جات سنگی\nگردشگری غذایی',
-        'problems': 'عدم برندسازی جهانی\nمشکلات مواد اولیه\nفاضلاب شهری', 'avg_vote': 2100, 'opponent': 'فلاحی',
-        'influencers': [
-            {'name': 'استاد کریمی', 'phone': '09141234571', 'role': 'تولیدکننده باسلوق', 'status': 'موافق', 'section': 'مرکزی', 'city': 'وایقان', 'village': 'وایقان', 'workgroup': 'اصناف', 'referrer': 'خودم', 'referrer_phone': '09140000000', 'last_call_date': '1404/12/11', 'last_call_result': 'حامی قطعی', 'next_call_date': ''}
-        ]
+        'influencers': []
     }
 ]
 
 DEFAULT_CITIES = [
-    {'id': 1, 'name': 'صوفیان', 'section': 'صوفیان', 'population': 10000, 'description': 'مرکز ترانزیت ریلی و جاده‌ای، شهرک صنعتی', 'key_people': ''},
-    {'id': 2, 'name': 'شندآباد', 'section': 'صوفیان', 'population': 4000, 'description': 'شهرک صنعتی خصوصی، تولید پوشاک', 'key_people': ''},
-    {'id': 3, 'name': 'شبستر', 'section': 'مرکزی', 'population': 20000, 'description': 'مرکز شهرستان، قطب اداری و دانشگاهی', 'key_people': ''},
-    {'id': 4, 'name': 'وایقان', 'section': 'مرکزی', 'population': 5000, 'description': 'شهر ملی باسلوق، قطب شیرینی‌جات سنگی', 'key_people': ''},
-    {'id': 5, 'name': 'کوزه‌کنان', 'section': 'مرکزی', 'population': 4500, 'description': 'شهر تاریخی با قدمت ۷ هزار ساله', 'key_people': ''},
-    {'id': 6, 'name': 'خامنه', 'section': 'مرکزی', 'population': 3500, 'description': 'باغات وسیع زردآلو و آلبالو', 'key_people': ''},
-    {'id': 7, 'name': 'تسوج', 'section': 'تسوج', 'population': 8000, 'description': 'قطب باغات زردآلو و گردو، منطقه گردشگری', 'key_people': ''},
-    {'id': 8, 'name': 'شرفخانه', 'section': 'تسوج', 'population': 3500, 'description': 'بندر سابق دریاچه ارومیه', 'key_people': ''},
+    {'id': 1, 'name': 'شبستر', 'section': 'مرکزی', 'population': 20000, 'description': 'مرکز شهرستان', 'key_people': ''}
 ]
 
 DEFAULT_WORKGROUPS = [
-    {'id': 1, 'name': 'بانوان', 'section': 'ستادی', 'icon': '👩‍👧‍👧', 'tasks': 'فعالیت‌های فرهنگی بانوان، اشتغال خانگی، بیمه', 'members': ''},
-    {'id': 2, 'name': 'ورزشکاران', 'section': 'ستادی', 'icon': '⚽', 'tasks': 'مسابقات محلی، رفع مشکلات باشگاه‌ها', 'members': ''},
-    {'id': 3, 'name': 'طلاب', 'section': 'ستادی', 'icon': '📿', 'tasks': 'ارتباط با مساجد و هیئات مذهبی', 'members': ''},
-    {'id': 4, 'name': 'فرهنگیان', 'section': 'ستادی', 'icon': '📚', 'tasks': 'ارتباط با معلمان، برنامه‌های آموزشی', 'members': ''},
-    {'id': 5, 'name': 'دانشجویان', 'section': 'ستادی', 'icon': '🎓', 'tasks': 'فضای مجازی، تبلیغات مدرن', 'members': ''},
-    {'id': 6, 'name': 'کشاورزان', 'section': 'ستادی', 'icon': '🌾', 'tasks': 'پیگیری بیمه، بازار فروش', 'members': ''},
-    {'id': 7, 'name': 'اصناف', 'section': 'ستادی', 'icon': '🏪', 'tasks': 'مشکلات مالیاتی و صنفی', 'members': ''},
-    {'id': 8, 'name': 'بازنشستگان', 'section': 'ستادی', 'icon': '👴', 'tasks': 'حقوق و مزایا، برنامه‌های رفاهی', 'members': ''},
-    {'id': 9, 'name': 'جوانان', 'section': 'ستادی', 'icon': '💪', 'tasks': 'اشتغال، مسکن، ازدواج', 'members': ''},
+    {'id': 1, 'name': 'بانوان', 'section': 'ستادی', 'icon': '👩‍👧‍👧', 'tasks': '', 'members': ''}
 ]
 
 # ============================================
-# توابع کمکی
+# توابع
 # ============================================
 def load_data():
     if os.path.exists(DATA_FILE):
@@ -123,7 +66,7 @@ def save_workgroups(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 # ============================================
-# صفحات اصلی
+# صفحات
 # ============================================
 @app.route('/')
 def index():
@@ -145,8 +88,6 @@ def index():
         sections[sec]['population'] += v['population']
         sections[sec]['votes'] += v['avg_vote']
     
-    # جمع‌آوری تماس‌های امروز
-    from datetime import datetime
     today = datetime.now().strftime('%Y/%m/%d')
     today_persian = today.replace('2026', '۱۴۰۴').replace('2025', '۱۴۰۴')
     
@@ -166,7 +107,6 @@ def index():
             elif inf.get('status') == 'مخالف':
                 mokhalef += 1
             
-            # تماس‌های امروز
             if inf.get('next_call_date') == today_persian:
                 today_calls.append({
                     'village': v['name'],
@@ -187,14 +127,11 @@ def index():
                          total_households=total_households,
                          total_avg_vote=total_avg_vote,
                          good=good, warning=warning, danger=danger,
-                         sections=sections,
-                         villages=villages,
-                         today_calls=today_calls,
-                         today_date=today_persian,
-                         total_contacts=total_contacts,
-                         moafeg=moafeg,
-                         mordad=mordad,
-                         mokhalef=mokhalef)
+                         sections=sections, villages=villages,
+                         today_calls=today_calls, today_date=today_persian,
+                         total_contacts=total_contacts, moafeg=moafeg,
+                         mordad=mordad, mokhalef=mokhalef)
+
 @app.route('/map')
 def map_view():
     return render_template('map.html', villages=load_data())
@@ -205,13 +142,11 @@ def village_profile(village_name):
     village = next((v for v in villages if v['name'] == village_name), None)
     if village:
         return render_template('village.html', village=village, village_name=village_name)
-    return f"<h1>روستای {village_name} یافت نشد</h1>"
+    return "<h1>روستا یافت نشد</h1>"
 
 @app.route('/speech', methods=['GET', 'POST'])
 def generate_speech():
     if request.method == 'POST':
-        import requests
-        
         village_name = request.form.get('village_name', 'روستای عزیز')
         section = request.form.get('section', 'شبستر')
         martyrs = request.form.get('martyrs', '')
@@ -220,105 +155,48 @@ def generate_speech():
         key_people = request.form.get('key_people', '')
         opponent = request.form.get('opponent', '')
         
-        # ساخت prompt برای AI
-        prompt = f"""یک سخنرانی انتخاباتی حرفه‌ای، احساسی و تأثیرگذار برای دکتر سهرابی کاندیدای نمایندگی شهرستان شبستر بنویس.
-        
-اطلاعات روستا:
-- نام روستا: {village_name}
-- بخش: {section}
-- شهدا: {martyrs if martyrs else 'ندارد'}
-- ظرفیت‌ها: {capacities if capacities else 'در حال تکمیل'}
-- مشکلات: {problems if problems else 'در حال تکمیل'}
-- افراد حاضر: {key_people if key_people else 'مردم شریف روستا'}
-- رقیب: {opponent if opponent else 'ندارد'}
-
-سبک سخنرانی:
-- با بسم الله و سلام و درود شروع شود
-- یاد شهدا گرامی داشته شود
-- به ظرفیت‌های روستا اشاره شود
-- مشکلات با همدردی بیان شود
-- برنامه‌های عملی دکتر سهرابی ذکر شود
-- از رقیب به صورت غیرمستقیم انتقاد شود
-- پایان حماسی و امیدوارکننده باشد
-- لحن صمیمی، مردمی، متعهد و حرفه‌ای
-- حداکثر ۴۰۰ کلمه"""
+        prompt = f"""یک سخنرانی انتخاباتی برای روستای {village_name} در بخش {section} بنویس.
+شهدا: {martyrs if martyrs else 'ندارد'}
+ظرفیت‌ها: {capacities if capacities else 'ندارد'}
+مشکلات: {problems if problems else 'ندارد'}
+با بسم الله شروع شود، یاد شهدا، ظرفیت‌ها، مشکلات، برنامه‌ها، و پایان امیدوارکننده."""
 
         speech = ""
         use_ai = request.form.get('use_ai', 'off') == 'on'
         
-               if use_ai:
+        if use_ai:
             try:
-                # استفاده از مدل فارسی‌تر و سریع‌تر
                 API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct"
                 headers = {"Authorization": "Bearer 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"}
-                
                 payload = {
-                    "inputs": f"<|system|>\nتو یک سخنران حرفه‌ای انتخاباتی هستی.\n<|user|>\n{prompt}\n<|assistant|>\n",
-                    "parameters": {"max_new_tokens": 600, "temperature": 0.8}
+                    "inputs": f"<|user|>\n{prompt}\n<|assistant|>\n",
+                    "parameters": {"max_new_tokens": 500, "temperature": 0.7}
                 }
-                
                 response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
-                
                 if response.status_code == 200:
                     result = response.json()
                     if isinstance(result, list) and len(result) > 0:
                         speech = result[0].get('generated_text', '')
                         if '<|assistant|>' in speech:
                             speech = speech.split('<|assistant|>')[-1].strip()
-                        speech = speech.replace('<|end|>', '').strip()
-                    else:
-                        use_ai = False
                 else:
                     use_ai = False
-            except Exception as e:
+            except:
                 use_ai = False
-            
         
         if not use_ai or not speech:
-            # قالب دستی
-            speech = f"""
-بسم الله الرحمن الرحیم
-
+            speech = f"""بسم الله الرحمن الرحیم
 السلام علیکم و رحمة الله و برکاته
-
-خدمت تکتک شما مردم شریف، نجیب و بزرگوار روستای {village_name}، سلام و درود میفرستم."""
-            
-            if martyrs:
-                speech += f"""
-
-🏴 قبل از هر چیز، یاد و خاطره شهدای گرانقدر این روستا را گرامی میداریم: {martyrs}
-از خداوند متعال برای این عزیزان علو درجات و برای خانواده‌های معززشان صبر و اجر مسئلت داریم."""
-            
-            if capacities:
-                speech += f"""
-
-⭐ ظرفیت‌های بی‌نظیر {village_name}:
-{capacities}"""
-            
-            if problems:
-                speech += f"""
-
-❌ مشکلاتی که باید حل شوند:
-{problems}
-من این مشکلات را از نزدیک لمس کرده‌ام و برنامه عملی برای حل آنها دارم."""
-            
-            speech += f"""
-
-💡 برنامه‌های دکتر سهرابی برای {village_name}:
-۱. ایجاد صندوق حمایت از کشاورزان و باغداران
-۲. راه‌اندازی صنایع تبدیلی و بسته‌بندی
-۳. پیگیری ویژه برای حل مشکلات آب و زیرساخت
-۴. حمایت از کسب‌وکارهای خانگی و اشتغال جوانان
-۵. حضور مستمر و پاسخگویی به مردم
-
-🚀 مردم شریف {village_name}، انتخابات پیش رو انتخاب بین ادامه وضع موجود و یک شروع تازه است. با هم می‌سازیم!
-
-با احترام
-دکتر سهرابی - خادم مردم شریف شهرستان شبستر 🇮🇷"""
+خدمت مردم شریف {village_name} سلام و درود میفرستم.
+{f'🏴 یاد شهدای گرانقدر: {martyrs}' if martyrs else ''}
+⭐ ظرفیت‌ها: {capacities if capacities else 'در حال تکمیل'}
+❌ مشکلات: {problems if problems else 'در حال تکمیل'}
+💡 با برنامه و عمل، {village_name} را میسازیم.
+دکتر سهرابی - خادم مردم شبستر 🇮🇷"""
         
         return render_template('speech.html', speech=speech, generated=True)
-    
     return render_template('speech.html', generated=False)
+
 @app.route('/contacts')
 def contacts():
     villages = load_data()
@@ -340,15 +218,11 @@ def contacts():
                 'last_call_result': inf.get('last_call_result', ''),
                 'next_call_date': inf.get('next_call_date', '')
             })
-    
     return render_template('contacts.html', contacts=all_contacts, villages=villages)
 
 @app.route('/manage')
 def manage():
-    villages = load_data()
-    cities = load_cities()
-    workgroups = load_workgroups()
-    return render_template('manage.html', villages=villages, cities=cities, workgroups=workgroups)
+    return render_template('manage.html', villages=load_data(), cities=load_cities(), workgroups=load_workgroups())
 
 @app.route('/war-room')
 def war_room():
@@ -357,18 +231,13 @@ def war_room():
     for v in villages:
         opp = v.get('opponent', 'نامشخص')
         if opp not in opponents:
-            opponents[opp] = {'name': opp, 'villages': [], 'total_votes': 0, 'strongholds': 0, 'weak_areas': 0}
+            opponents[opp] = {'name': opp, 'villages': [], 'total_votes': 0, 'strongholds': 0}
         opponents[opp]['villages'].append(v['name'])
         opponents[opp]['total_votes'] += v['avg_vote']
         if v['status'] == 'danger':
             opponents[opp]['strongholds'] += 1
-        elif v['status'] == 'warning':
-            opponents[opp]['weak_areas'] += 1
     return render_template('war_room.html', opponents=list(opponents.values()), villages=villages)
 
-# ============================================
-# API ها
-# ============================================
 @app.route('/api/villages')
 def api_villages():
     return jsonify(load_data())
@@ -378,38 +247,35 @@ def opponent_analysis(village_name):
     villages = load_data()
     village = next((v for v in villages if v['name'] == village_name), None)
     if village:
-        analysis = {
-            'village': village['name'], 'opponent': village.get('opponent', 'نامشخص'),
+        return jsonify({
+            'village': village['name'],
+            'opponent': village.get('opponent', ''),
             'status': village['status'],
             'our_strength': 'قوی' if village['status'] == 'good' else 'متوسط' if village['status'] == 'warning' else 'ضعیف',
-            'priority': 'پایین' if village['status'] == 'good' else 'متوسط' if village['status'] == 'warning' else 'فوری',
-            'recommendation': ''
-        }
-        if village['status'] == 'good':
-            analysis['recommendation'] = 'حفظ وضعیت، تقویت نیروهای حامی'
-        elif village['status'] == 'warning':
-            analysis['recommendation'] = 'تمرکز بر افراد مردد، جلسات چهره به چهره'
-        else:
-            analysis['recommendation'] = 'حضور فوری دکتر، استفاده از معتمدین محلی، برنامه ویژه'
-        return jsonify(analysis)
+            'priority': 'فوری' if village['status'] == 'danger' else 'متوسط' if village['status'] == 'warning' else 'پایین',
+            'recommendation': 'حفظ وضعیت' if village['status'] == 'good' else 'جلسات چهره به چهره' if village['status'] == 'warning' else 'حضور فوری دکتر'
+        })
     return jsonify({'error': 'Not found'}), 404
 
 @app.route('/api/add_village', methods=['POST'])
 def add_village():
     villages = load_data()
-    new_village = {
+    villages.append({
         'id': max([v['id'] for v in villages]) + 1 if villages else 1,
-        'name': request.form.get('name', ''), 'section': request.form.get('section', ''),
+        'name': request.form.get('name', ''),
+        'section': request.form.get('section', ''),
         'population': int(request.form.get('population', 0)),
         'households': int(request.form.get('households', 0)),
         'martyrs': request.form.get('martyrs', ''),
-        'lat': float(request.form.get('lat', 38.28)), 'lng': float(request.form.get('lng', 45.77)),
+        'lat': float(request.form.get('lat', 38.28)),
+        'lng': float(request.form.get('lng', 45.77)),
         'status': request.form.get('status', 'warning'),
-        'capacities': request.form.get('capacities', ''), 'problems': request.form.get('problems', ''),
-        'avg_vote': int(request.form.get('avg_vote', 0)), 'opponent': request.form.get('opponent', ''),
+        'capacities': request.form.get('capacities', ''),
+        'problems': request.form.get('problems', ''),
+        'avg_vote': int(request.form.get('avg_vote', 0)),
+        'opponent': request.form.get('opponent', ''),
         'influencers': []
-    }
-    villages.append(new_village)
+    })
     save_data(villages)
     return redirect(url_for('manage'))
 
@@ -423,44 +289,28 @@ def delete_village(village_id):
 @app.route('/api/add_city', methods=['POST'])
 def add_city():
     cities = load_cities()
-    new_city = {
+    cities.append({
         'id': max([c['id'] for c in cities]) + 1 if cities else 1,
         'name': request.form.get('city_name', ''),
         'section': request.form.get('section', ''),
         'population': int(request.form.get('population', 0)),
         'description': request.form.get('description', ''),
         'key_people': request.form.get('key_people', '')
-    }
-    cities.append(new_city)
-    save_cities(cities)
-    return redirect(url_for('manage'))
-
-@app.route('/api/delete_city/<int:city_id>')
-def delete_city(city_id):
-    cities = load_cities()
-    cities = [c for c in cities if c['id'] != city_id]
+    })
     save_cities(cities)
     return redirect(url_for('manage'))
 
 @app.route('/api/add_workgroup', methods=['POST'])
 def add_workgroup():
     wgs = load_workgroups()
-    new_wg = {
+    wgs.append({
         'id': max([w['id'] for w in wgs]) + 1 if wgs else 1,
         'name': request.form.get('wg_name', ''),
-        'section': request.form.get('section', 'ستادی'),
-        'icon': request.form.get('icon', '👥'),
+        'section': request.form.get('section', ''),
+        'icon': request.form.get('icon', ''),
         'tasks': request.form.get('tasks', ''),
         'members': request.form.get('members', '')
-    }
-    wgs.append(new_wg)
-    save_workgroups(wgs)
-    return redirect(url_for('manage'))
-
-@app.route('/api/delete_workgroup/<int:wg_id>')
-def delete_workgroup(wg_id):
-    wgs = load_workgroups()
-    wgs = [w for w in wgs if w['id'] != wg_id]
+    })
     save_workgroups(wgs)
     return redirect(url_for('manage'))
 
@@ -493,16 +343,7 @@ def add_influencer():
     return redirect(url_for('manage'))
 
 # ============================================
-# اجرا
-# ============================================
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
     os.makedirs('templates', exist_ok=True)
-    print("="*60)
-    print("🗳️ داشبورد انتخاباتی دکتر سهرابی - شهرستان شبستر")
-    print("📍 http://localhost:5000")
-    print("📞 http://localhost:5000/contacts")
-    print("📝 http://localhost:5000/manage")
-    print("🎯 http://localhost:5000/war-room")
-    print("="*60)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run()
