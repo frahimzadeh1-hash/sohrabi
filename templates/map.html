@@ -9,20 +9,28 @@
         * { font-family: Tahoma; }
         body { margin: 0; padding: 0; }
         #map { height: 85vh; width: 100%; }
-        .header { background: #0c4a6e; color: white; padding: 15px; text-align: center; }
-        .header a { color: white; margin: 0 10px; text-decoration: none; }
-        .info-box { background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .header { background: #1a1a1a; color: #4a7c59; padding: 15px; text-align: center; border-bottom: 2px solid #4a7c59; }
+        .header h2 { margin: 0; }
+        .header a { color: #ccc; margin: 0 10px; text-decoration: none; }
+        .header a:hover { color: #4a7c59; }
+        .flag-strip { height: 3px; background: linear-gradient(90deg, #4a7c59 33%, white 33%, white 66%, #8b3c3c 66%); max-width: 150px; margin: 5px auto; }
+        .popup-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .popup-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+        .popup-table td:first-child { font-weight: bold; color: #4a7c59; }
+        .btn-popup { display: inline-block; background: #4a7c59; color: white; padding: 8px 15px; border-radius: 8px; text-decoration: none; margin-top: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="header">
+        <div style="font-size:1.5rem;">🇮🇷</div>
+        <div class="flag-strip"></div>
         <h2>🗺️ نقشه انتخاباتی شهرستان شبستر</h2>
         <a href="/">📊 داشبورد</a> | 
         <a href="/contacts">📞 تلفن</a> | 
         <a href="/speech">🎤 سخنرانی</a> |
-        <a href="/manage">📝 مدیریت</a>
+        <a href="/manage">📝 مدیریت</a> |
         <a href="/war-room">🎯 اتاق جنگ</a>
-        <p><small>🟢 خوب | 🟡 متوسط | 🔴 ضعیف - روی هر روستا کلیک کنید</small></p>
+        <p style="margin:5px 0;"><small>🟢 خوب | 🟡 متوسط | 🔴 ضعیف - روی هر روستا کلیک کنید</small></p>
     </div>
     <div id="map"></div>
     
@@ -33,12 +41,12 @@
         attribution: '© OpenStreetMap'
     }).addTo(map);
     
-    // دریافت داده‌ها از API
     fetch('/api/villages')
-    .then(response => response.json())
-    .then(villages => {
+    .then(function(response) { return response.json(); })
+    .then(function(villages) {
         villages.forEach(function(v) {
-            var color = v.status === 'good' ? '#10b981' : v.status === 'warning' ? '#f59e0b' : '#ef4444';
+            var color = v.status === 'good' ? '#4a7c59' : v.status === 'warning' ? '#8b7d3c' : '#8b3c3c';
+            var statusText = v.status === 'good' ? '🟢 خوب' : v.status === 'warning' ? '🟡 متوسط' : '🔴 ضعیف';
             
             var marker = L.circleMarker([v.lat, v.lng], {
                 radius: 15,
@@ -48,15 +56,23 @@
                 fillOpacity: 0.8
             }).addTo(map);
             
-            marker.bindPopup(`
-                <div class="info-box" style="text-align:center;">
-                    <h4>${v.name}</h4>
-                    <p>بخش: ${v.section} | جمعیت: ${v.population.toLocaleString()}</p>
-                    <p>میانگین رأی: ${v.avg_vote.toLocaleString()}</p>
-                    <a href="/village/${v.name}" style="color:#0ea5e9;">👁️ مشاهده پروفایل</a>
-                </div>
-            `);
+            var popupContent = '<div style="text-align:center; min-width:180px;">' +
+                '<h4 style="margin:5px 0; color:#1a1a1a;">' + v.name + '</h4>' +
+                '<table class="popup-table">' +
+                '<tr><td>بخش</td><td>' + v.section + '</td></tr>' +
+                '<tr><td>جمعیت</td><td>' + v.population.toLocaleString() + ' نفر</td></tr>' +
+                '<tr><td>خانوار</td><td>' + (v.households || 0).toLocaleString() + '</td></tr>' +
+                '<tr><td>وضعیت</td><td>' + statusText + '</td></tr>' +
+                '<tr><td>آرا</td><td>' + (v.avg_vote || 0).toLocaleString() + '</td></tr>' +
+                '</table>' +
+                '<a href="/village/' + encodeURIComponent(v.name) + '" class="btn-popup">👁️ مشاهده پروفایل کامل</a>' +
+                '</div>';
+            
+            marker.bindPopup(popupContent);
         });
+    })
+    .catch(function(error) {
+        console.log('Error:', error);
     });
     </script>
 </body>
