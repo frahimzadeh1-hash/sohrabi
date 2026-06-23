@@ -244,34 +244,33 @@ def generate_speech():
         speech = ""
         use_ai = request.form.get('use_ai', 'off') == 'on'
         
-        if use_ai:
+               if use_ai:
             try:
-                # Hugging Face API
-                API_URL = "https://api-inference.huggingface.co/models/google/gemma-2-2b-it"
+                # استفاده از مدل فارسی‌تر و سریع‌تر
+                API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct"
                 headers = {"Authorization": "Bearer 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"}
                 
                 payload = {
-                    "inputs": f"<start_of_turn>user\n{prompt}<end_of_turn>\n<start_of_turn>model\n",
-                    "parameters": {"max_new_tokens": 500, "temperature": 0.7}
+                    "inputs": f"<|system|>\nتو یک سخنران حرفه‌ای انتخاباتی هستی.\n<|user|>\n{prompt}\n<|assistant|>\n",
+                    "parameters": {"max_new_tokens": 600, "temperature": 0.8}
                 }
                 
-                response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
+                response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
                 
                 if response.status_code == 200:
                     result = response.json()
                     if isinstance(result, list) and len(result) > 0:
                         speech = result[0].get('generated_text', '')
-                        # پاکسازی خروجی
-                        if '<start_of_turn>model' in speech:
-                            speech = speech.split('<start_of_turn>model')[-1].strip()
-                        speech = speech.replace('<end_of_turn>', '').strip()
+                        if '<|assistant|>' in speech:
+                            speech = speech.split('<|assistant|>')[-1].strip()
+                        speech = speech.replace('<|end|>', '').strip()
                     else:
-                        speech = "⚠️ خطا در تولید متن. لطفاً دوباره تلاش کنید."
+                        use_ai = False
                 else:
-                    # اگه مدل آماده نیست، fallback به قالب دستی
                     use_ai = False
             except Exception as e:
                 use_ai = False
+            
         
         if not use_ai or not speech:
             # قالب دستی
