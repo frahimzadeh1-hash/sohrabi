@@ -6,97 +6,73 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * { font-family: Tahoma; }
-        body { background: #f0f2f5; padding: 20px; }
-        .card { background: white; border-radius: 15px; padding: 25px; margin: 15px auto; max-width: 1200px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header { background: #0c4a6e; color: white; padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
-        .header a { color: white; margin: 0 10px; text-decoration: none; }
+        body { background: #f5f5f5; padding: 20px; }
+        .card { background: white; border-radius: 15px; padding: 25px; margin: 15px auto; max-width: 1200px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .header { background: #1a1a1a; padding: 20px; text-align: center; border-radius: 15px; margin-bottom: 20px; border: 2px solid #4a7c59; }
+        .header h2 { color: #4a7c59; }
+        .header a { color: #ccc; margin: 0 10px; text-decoration: none; }
+        .header a:hover { color: #4a7c59; }
+        .flag-strip { height: 3px; background: linear-gradient(90deg, #4a7c59 33%, white 33%, white 66%, #8b3c3c 66%); max-width: 150px; margin: 5px auto; }
         input, textarea, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .btn { padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; width: 100%; font-weight: bold; }
-        .btn-generate { background: linear-gradient(90deg, #0ea5e9, #0284c7); color: white; }
-        .btn-copy { background: #10b981; color: white; margin-top: 10px; }
-        .btn-back { background: #6b7280; color: white; margin-top: 10px; }
-        .speech-box { background: linear-gradient(135deg, #fefefe, #f8f9fa); padding: 30px; border-radius: 15px; line-height: 2.8; white-space: pre-wrap; border: 2px solid #0c4a6e; font-size: 1.05rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .section-title { color: #0c4a6e; font-weight: bold; margin-top: 20px; }
+        .btn { padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 1rem; }
+        .btn-ai { background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; }
+        .btn-normal { background: #4a7c59; color: white; }
+        .btn-copy { background: #f59e0b; color: black; margin-top: 10px; }
+        .speech-box { background: #f9f9f9; padding: 30px; border-radius: 15px; line-height: 2.8; white-space: pre-wrap; border: 2px solid #4a7c59; }
+        .ai-badge { background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h2>🎤 تولید سخنرانی حرفه‌ای</h2>
+        <div style="font-size:2rem;">🇮🇷</div>
+        <div class="flag-strip"></div>
+        <h2>🎤 تولید سخنرانی</h2>
         <a href="/">📊 داشبورد</a> | 
         <a href="/map">🗺️ نقشه</a> | 
         <a href="/contacts">📞 تلفن</a> |
-        <a href="/manage">📝 مدیریت</a>
+        <a href="/manage">📝 مدیریت</a> |
         <a href="/war-room">🎯 اتاق جنگ</a>
     </div>
     
-    <div class="row" style="display:flex; gap:20px; flex-wrap:wrap;">
-        <!-- فرم ورودی -->
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
         <div class="card" style="flex:1; min-width:350px;">
-            <h4>📝 اطلاعات روستا</h4>
-            <form method="POST" id="speechForm">
-                <label>🏘️ نام روستا *</label>
-                <input type="text" name="village_name" placeholder="مثلاً: اندبیل" required>
-                
-                <label>📍 بخش</label>
+            <h4 style="color:#4a7c59;">📝 اطلاعات روستا</h4>
+            <form method="POST">
+                <input type="text" name="village_name" placeholder="🏘️ نام روستا *" required>
                 <select name="section">
-                    <option value="مرکزی">مرکزی</option>
-                    <option value="تسوج">تسوج</option>
-                    <option value="صوفیان">صوفیان</option>
+                    <option value="مرکزی">بخش مرکزی</option>
+                    <option value="صوفیان">بخش صوفیان</option>
+                    <option value="تسوج">بخش تسوج</option>
                 </select>
+                <input type="text" name="martyrs" placeholder="🏴 شهدا (با کاما)">
+                <textarea name="capacities" rows="3" placeholder="⭐ ظرفیت‌ها (هر کدام در یک خط)"></textarea>
+                <textarea name="problems" rows="3" placeholder="❌ مشکلات (هر کدام در یک خط)"></textarea>
+                <input type="text" name="key_people" placeholder="👥 افراد حاضر">
+                <input type="text" name="opponent" placeholder="🎯 نام رقیب">
                 
-                <label>👥 جمعیت تقریبی</label>
-                <input type="text" name="population" placeholder="مثلاً: ۲,۴۰۰ نفر">
+                <label style="display:flex; align-items:center; gap:10px; margin:10px 0; cursor:pointer;">
+                    <input type="checkbox" name="use_ai" style="width:auto;"> 
+                    <span class="ai-badge">🤖 استفاده از هوش مصنوعی</span>
+                </label>
                 
-                <label>🏠 تعداد خانوار</label>
-                <input type="text" name="households" placeholder="مثلاً: ۶۵۰ خانوار">
-                
-                <label>🏴 شهدا (با کاما جدا کنید)</label>
-                <input type="text" name="martyrs" placeholder="مثلاً: شهید رحیمی، شهید عباس‌زاده">
-                
-                <label>⭐ ظرفیت‌ها (هر کدام در یک خط)</label>
-                <textarea name="capacities" rows="4" placeholder="باغات سیب و گردو
-چشمه آب معدنی
-نیروی جوان و تحصیل‌کرده"></textarea>
-                
-                <label>❌ مشکلات (هر کدام در یک خط)</label>
-                <textarea name="problems" rows="4" placeholder="کمبود آب کشاورزی
-نبود سردخانه
-مهاجرت جوانان"></textarea>
-                
-                <label>🎯 نام کاندیدای رقیب</label>
-                <input type="text" name="opponent" placeholder="مثلاً: آقای فلاحی">
-                
-                <label>📋 افراد تأثیرگذار حاضر در جلسه</label>
-                <textarea name="key_people" rows="2" placeholder="مثلاً: حاج رضا محمدی (رئیس شورا)، خانم زهرا حسینی (کارآفرین)"></textarea>
-                
-                <button type="submit" class="btn btn-generate">🚀 تولید سخنرانی حرفه‌ای</button>
+                <button type="submit" class="btn btn-ai">🤖 تولید با هوش مصنوعی</button>
             </form>
         </div>
         
-        <!-- خروجی -->
         <div class="card" style="flex:1; min-width:350px;">
             {% if generated %}
-            <h4>✅ متن سخنرانی</h4>
+            <h4 style="color:#4a7c59;">✅ متن سخنرانی</h4>
             <div class="speech-box" id="speechText">{{ speech }}</div>
-            <button class="btn btn-copy" onclick="copySpeech()">📋 کپی متن سخنرانی</button>
-            <a href="/speech" class="btn btn-back" style="display:block; text-align:center; text-decoration:none;">🔄 ساخت سخنرانی جدید</a>
+            <button class="btn btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('speechText').innerText);alert('✅ کپی شد!')">📋 کپی</button>
+            <a href="/speech"><button class="btn btn-normal" style="margin-top:5px;">🔄 جدید</button></a>
             {% else %}
-            <div style="text-align:center; padding:50px;">
+            <div style="text-align:center; padding:50px; color:#999;">
                 <div style="font-size:5rem;">🎤</div>
                 <h3>متن سخنرانی اینجا نمایش داده می‌شود</h3>
-                <p style="color:#6b7280;">لطفاً اطلاعات روستا را وارد کنید و دکمه تولید را بزنید</p>
+                <p>اطلاعات را وارد کنید و دکمه را بزنید</p>
             </div>
             {% endif %}
         </div>
     </div>
-    
-    <script>
-    function copySpeech() {
-        var text = document.getElementById('speechText').innerText;
-        navigator.clipboard.writeText(text).then(function() {
-            alert('✅ متن سخنرانی با موفقیت کپی شد!');
-        });
-    }
-    </script>
 </body>
 </html>
