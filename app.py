@@ -341,7 +341,20 @@ def add_influencer():
             save_data(villages)
             break
     return redirect(url_for('manage'))
-
+@app.route('/test-ai')
+def test_ai():
+    import requests
+    API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct"
+    headers = {"Authorization": "Bearer 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"}
+    payload = {
+        "inputs": "<|user|>\nسلام، حالت چطوره؟\n<|assistant|>\n",
+        "parameters": {"max_new_tokens": 50}
+    }
+    try:
+        response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
+        return f"Status: {response.status_code}<br>Response: {response.text[:500]}"
+    except Exception as e:
+        return f"Error: {str(e)}"
 # ============================================
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
