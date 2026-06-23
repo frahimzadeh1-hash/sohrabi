@@ -25,9 +25,9 @@
         .tree-branch { display: flex; flex-direction: column; align-items: center; min-width: 150px; }
         .node { border-radius: 12px; padding: 12px 22px; cursor: pointer; transition: 0.3s; font-weight: bold; text-align: center; display: inline-block; user-select: none; white-space: nowrap; }
         .node:hover { transform: scale(1.05); }
-        .node-root { background: #1a1a1a; color: white; font-size: 1.3rem; padding: 18px 35px; border: 4px solid #4a7c59; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-        .node-section { background: #4a7c59; color: white; font-size: 1.1rem; min-width: 130px; box-shadow: 0 4px 12px rgba(74,124,89,0.3); }
-        .node-workgroup { background: #8b7d3c; color: white; font-size: 1.1rem; min-width: 130px; box-shadow: 0 4px 12px rgba(139,125,60,0.3); }
+        .node-root { background: #1a1a1a; color: white; font-size: 1.3rem; padding: 18px 35px; border: 4px solid #4a7c59; border-radius: 20px; }
+        .node-section { background: #4a7c59; color: white; font-size: 1.1rem; min-width: 130px; }
+        .node-workgroup { background: #8b7d3c; color: white; font-size: 1.1rem; min-width: 130px; }
         .node-sub { padding: 8px 15px; font-size: 0.85rem; min-width: 80px; }
         .node-city { background: #3c6b8b; color: white; }
         .node-village { background: white; border: 2px solid #4a7c59; color: #1a1a1a; }
@@ -37,22 +37,20 @@
         .branch-content.open { display: flex; }
         .sub-items { display: none; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 8px; padding: 10px; background: #f9f9f9; border-radius: 10px; }
         .sub-items.open { display: flex; }
-        .sub-items.list { flex-direction: column; align-items: center; max-height: 180px; overflow-y: auto; min-width: 140px; }
+        .sub-items.list { flex-direction: column; align-items: center; max-height: 200px; overflow-y: auto; min-width: 140px; }
         
         .info-panel { background: #f9f9f9; border-radius: 15px; padding: 20px; margin-top: 25px; border: 2px solid #4a7c59; display: none; }
         .info-panel.active { display: block; }
-        .info-panel h3 { color: #4a7c59; margin-bottom: 15px; }
+        .info-panel h3 { color: #4a7c59; }
         .info-table { width: 100%; border-collapse: collapse; }
         .info-table td { padding: 10px; border-bottom: 1px solid #ddd; }
-        .info-table td:first-child { font-weight: bold; width: 30%; color: #1a1a1a; background: #eee; }
+        .info-table td:first-child { font-weight: bold; width: 30%; background: #eee; }
         
         .calls-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .calls-table th { background: #1a1a1a; color: white; padding: 10px; font-size: 0.85rem; }
         .calls-table td { padding: 8px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.85rem; }
         .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; color: white; }
-        .badge-good { background: #4a7c59; }
-        .badge-warning { background: #8b7d3c; }
-        .badge-danger { background: #8b3c3c; }
+        .badge-good { background: #4a7c59; } .badge-warning { background: #8b7d3c; } .badge-danger { background: #8b3c3c; }
         .today-highlight { background: #fef3c7; }
     </style>
 </head>
@@ -62,9 +60,7 @@
     <div style="display:flex; align-items:center; gap:15px;">
         <div style="width:35px; height:55px; border-radius:5px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
             <div style="flex:1; background:#4a7c59;"></div>
-            <div style="flex:1; background:#ffffff; display:flex; align-items:center; justify-content:center;">
-                <span style="font-size:0.7rem; color:#8b3c3c;">☫</span>
-            </div>
+            <div style="flex:1; background:#ffffff; display:flex; align-items:center; justify-content:center;"><span style="font-size:0.7rem; color:#8b3c3c;">☫</span></div>
             <div style="flex:1; background:#8b3c3c;"></div>
         </div>
         <span class="title">🇮🇷 شهرستان شبستر</span>
@@ -79,15 +75,6 @@
     </div>
 </div>
 
-<div class="stat-row">
-    <div class="stat-box"><small>🏘️ روستاها</small><div class="num green">{{ total_villages }}</div></div>
-    <div class="stat-box"><small>👥 جمعیت</small><div class="num green">{{ "{:,}".format(total_population) }}</div></div>
-    <div class="stat-box"><small>📞 کل مخاطبین</small><div class="num blue">{{ total_contacts }}</div></div>
-    <div class="stat-box"><small>🟢 موافق</small><div class="num green">{{ moafeg }}</div></div>
-    <div class="stat-box"><small>🟡 مردد</small><div class="num yellow">{{ mordad }}</div></div>
-    <div class="stat-box"><small>🔴 مخالف</small><div class="num red">{{ mokhalef }}</div></div>
-</div>
-
 <div class="main-card">
     
     <!-- فلوچارت -->
@@ -97,7 +84,12 @@
             <div class="connector-line"></div>
             <div class="tree-branches">
                 
-                {% for sec in ['صوفیان', 'مرکزی', 'تسوج'] %}
+                {% set secs = ['صوفیان', 'مرکزی', 'تسوج'] %}
+                {% set cities_map = {'صوفیان': ['صوفیان', 'شندآباد'], 'مرکزی': ['شبستر', 'وایقان', 'کوزه‌کنان', 'خامنه'], 'تسوج': ['تسوج', 'شرفخانه']} %}
+                {% set wgs = ['بانوان','ورزشکاران','طلاب','فرهنگیان','دانشجویان','کشاورزان','اصناف','بازنشستگان','جوانان'] %}
+                {% set wg_icons = {'بانوان':'👩‍👧‍👧','ورزشکاران':'⚽','طلاب':'📿','فرهنگیان':'📚','دانشجویان':'🎓','کشاورزان':'🌾','اصناف':'🏪','بازنشستگان':'👴','جوانان':'💪'} %}
+                
+                {% for sec in secs %}
                 <div class="tree-branch">
                     <span class="node node-section" onclick="showInfo('section','{{ sec }}'); toggleBranch('branch-{{ sec }}')">📍 {{ sec }}</span>
                     <div class="connector-line"></div>
@@ -108,9 +100,8 @@
                             <span class="node node-sub node-wg" onclick="toggleSub('wg-{{ sec }}')">👥 کارگروه‌ها ▼</span>
                         </div>
                         <div class="sub-items list" id="cities-{{ sec }}">
-                            {% set cities_map = {'صوفیان': ['صوفیان', 'شندآباد'], 'مرکزی': ['شبستر', 'وایقان', 'کوزه‌کنان', 'خامنه'], 'تسوج': ['تسوج', 'شرفخانه']} %}
                             {% for city in cities_map[sec] %}
-                            <span class="node node-sub node-city" onclick="showInfo('city-detail','{{ city }}')">🏢 {{ city }}</span>
+                            <span class="node node-sub node-city" onclick="showInfo('city','{{ city }}')">🏢 {{ city }}</span>
                             {% endfor %}
                         </div>
                         <div class="sub-items list" id="villages-{{ sec }}">
@@ -119,8 +110,8 @@
                             {% endfor %}
                         </div>
                         <div class="sub-items list" id="wg-{{ sec }}">
-                            {% for wg in ['بانوان','ورزشکاران','طلاب','فرهنگیان','دانشجویان','کشاورزان','اصناف','بازنشستگان','جوانان'] %}
-                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','{{ wg }}')">{{ {'بانوان':'👩‍👧‍👧','ورزشکاران':'⚽','طلاب':'📿','فرهنگیان':'📚','دانشجویان':'🎓','کشاورزان':'🌾','اصناف':'🏪','بازنشستگان':'👴','جوانان':'💪'}[wg] }} {{ wg }}</span>
+                            {% for wg in wgs %}
+                            <span class="node node-sub node-wg" onclick="showInfo('wg','{{ wg }}')">{{ wg_icons[wg] }} {{ wg }}</span>
                             {% endfor %}
                         </div>
                     </div>
@@ -132,8 +123,8 @@
                     <div class="connector-line"></div>
                     <div class="branch-content" id="branch-main-wg">
                         <div class="sub-items open list">
-                            {% for wg in ['بانوان','ورزشکاران','طلاب','فرهنگیان','دانشجویان','کشاورزان','اصناف','بازنشستگان','جوانان'] %}
-                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','{{ wg }}')">{{ {'بانوان':'👩‍👧‍👧','ورزشکاران':'⚽','طلاب':'📿','فرهنگیان':'📚','دانشجویان':'🎓','کشاورزان':'🌾','اصناف':'🏪','بازنشستگان':'👴','جوانان':'💪'}[wg] }} {{ wg }}</span>
+                            {% for wg in wgs %}
+                            <span class="node node-sub node-wg" onclick="showInfo('wg','{{ wg }}')">{{ wg_icons[wg] }} {{ wg }}</span>
                             {% endfor %}
                         </div>
                     </div>
@@ -155,61 +146,31 @@
     </div>
     <div style="overflow-x:auto;">
         <table class="calls-table">
-            <thead>
-                <tr>
-                    <th>#</th><th>بخش</th><th>روستا</th><th>نام</th><th>شماره</th><th>نقش</th><th>وضعیت</th>
-                    <th>معرف</th><th>شماره معرف</th><th>آخرین تماس</th><th>نتیجه</th><th>تماس بعدی</th>
-                </tr>
-            </thead>
+            <thead><tr><th>#</th><th>بخش</th><th>روستا</th><th>نام</th><th>شماره</th><th>نقش</th><th>وضعیت</th><th>معرف</th><th>شماره معرف</th><th>آخرین تماس</th><th>نتیجه</th><th>تماس بعدی</th></tr></thead>
             <tbody>
                 {% for c in today_calls %}
-                <tr class="today-highlight">
-                    <td>{{ loop.index }}</td>
-                    <td>{{ c.section }}</td>
-                    <td>{{ c.village }}</td>
-                    <td><strong>{{ c.name }}</strong></td>
-                    <td dir="ltr">{{ c.phone }}</td>
-                    <td>{{ c.role }}</td>
-                    <td>
-                        {% if c.status == 'موافق' %}<span class="badge badge-good">موافق</span>
-                        {% elif c.status == 'مردد' %}<span class="badge badge-warning">مردد</span>
-                        {% else %}<span class="badge badge-danger">مخالف</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ c.referrer if c.referrer else '-' }}</td>
-                    <td dir="ltr">{{ c.referrer_phone if c.referrer_phone else '-' }}</td>
-                    <td>{{ c.last_call_date if c.last_call_date else '-' }}</td>
-                    <td>{{ c.last_call_result if c.last_call_result else '-' }}</td>
-                    <td><strong style="color:#f59e0b;">📅 امروز</strong></td>
-                </tr>
+                <tr class="today-highlight"><td>{{ loop.index }}</td><td>{{ c.section }}</td><td>{{ c.village }}</td><td><strong>{{ c.name }}</strong></td><td dir="ltr">{{ c.phone }}</td><td>{{ c.role }}</td>
+                    <td>{% if c.status == 'موافق' %}<span class="badge badge-good">موافق</span>{% elif c.status == 'مردد' %}<span class="badge badge-warning">مردد</span>{% else %}<span class="badge badge-danger">مخالف</span>{% endif %}</td>
+                    <td>{{ c.referrer if c.referrer else '-' }}</td><td dir="ltr">{{ c.referrer_phone if c.referrer_phone else '-' }}</td>
+                    <td>{{ c.last_call_date if c.last_call_date else '-' }}</td><td>{{ c.last_call_result if c.last_call_result else '-' }}</td><td><strong style="color:#f59e0b;">📅 امروز</strong></td></tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-    {% else %}
-    <div style="text-align:center; padding:30px; color:#999; margin-top:20px;">
-        <div style="font-size:3rem;">📞</div>
-        <h3>امروز تماسی برنامه‌ریزی نشده</h3>
     </div>
     {% endif %}
     
     <!-- نمودارها -->
     <div style="display:flex; gap:15px; margin-top:30px; flex-wrap:wrap;">
-        <div style="flex:1; min-width:300px;">
-            <h4 style="text-align:center;">📊 آمار مخاطبین</h4>
-            <canvas id="contactsChart"></canvas>
-        </div>
-        <div style="flex:1; min-width:300px;">
-            <h4 style="text-align:center;">📈 وضعیت کمپین</h4>
-            <canvas id="statusChart"></canvas>
-        </div>
+        <div style="flex:1; min-width:300px;"><h4 style="text-align:center;">📊 آمار مخاطبین</h4><canvas id="contactsChart"></canvas></div>
+        <div style="flex:1; min-width:300px;"><h4 style="text-align:center;">📈 وضعیت کمپین</h4><canvas id="statusChart"></canvas></div>
     </div>
 </div>
 
 <script>
-var villagesData = {{ villages|tojson }};
 function toggleBranch(id) { document.getElementById(id).classList.toggle('open'); }
 function toggleSub(id) { document.getElementById(id).classList.toggle('open'); }
+
+var villagesData = {{ villages | tojson | safe }};
 
 function showInfo(type, name) {
     var panel = document.getElementById('infoPanel');
@@ -218,25 +179,64 @@ function showInfo(type, name) {
     panel.classList.add('active');
     
     if (type === 'shabestar') {
-        title.innerText = '🏙️ شهرستان شبستر';
-        content.innerHTML = '<table class="info-table"><tr><td>شهرستان</td><td>شبستر</td></tr><tr><td>بخش‌ها</td><td>صوفیان - مرکزی - تسوج</td></tr><tr><td>روستاها</td><td>{{ total_villages }} روستا</td></tr><tr><td>جمعیت</td><td>{{ "{:,}".format(total_population) }} نفر</td></tr></table>';
-    } else if (type === 'village') {
+        // اطلاعات کامل شهرستان: شهرها + روستاها + کارگروه‌ها
+        var allCities = ['صوفیان','شندآباد','شبستر','وایقان','کوزه‌کنان','خامنه','تسوج','شرفخانه'];
+        var allWgs = ['بانوان','ورزشکاران','طلاب','فرهنگیان','دانشجویان','کشاورزان','اصناف','بازنشستگان','جوانان'];
+        
+        title.innerText = '🏙️ شهرستان شبستر - اطلاعات کامل';
+        content.innerHTML = '<table class="info-table">' +
+            '<tr><td>🏙️ شهرستان</td><td>شبستر (آذربایجان شرقی)</td></tr>' +
+            '<tr><td>📊 بخش‌ها</td><td>صوفیان - مرکزی - تسوج</td></tr>' +
+            '<tr><td>🏢 شهرها (' + allCities.length + ')</td><td>' + allCities.join('، ') + '</td></tr>' +
+            '<tr><td>🏘️ کل روستاها</td><td>{{ total_villages }} روستا</td></tr>' +
+            '<tr><td>👥 جمعیت</td><td>{{ "{:,}".format(total_population) }} نفر</td></tr>' +
+            '<tr><td>📞 مخاطبین</td><td>{{ total_contacts }} نفر (موافق: {{ moafeg }} | مردد: {{ mordad }} | مخالف: {{ mokhalef }})</td></tr>' +
+            '<tr><td>👥 کارگروه‌ها</td><td>' + allWgs.join('، ') + '</td></tr>' +
+            '</table>';
+    }
+    else if (type === 'section') {
+        var vills = villagesData.filter(function(v){ return v.section === name; });
+        var cities = {'صوفیان':['صوفیان','شندآباد'],'مرکزی':['شبستر','وایقان','کوزه‌کنان','خامنه'],'تسوج':['تسوج','شرفخانه']}[name]||[];
+        var pop = vills.reduce(function(s,v){ return s+v.population; }, 0);
+        var wgs = ['بانوان','ورزشکاران','طلاب','فرهنگیان','دانشجویان','کشاورزان','اصناف','بازنشستگان','جوانان'];
+        
+        title.innerText = '📍 بخش ' + name;
+        content.innerHTML = '<table class="info-table">' +
+            '<tr><td>📍 بخش</td><td>' + name + '</td></tr>' +
+            '<tr><td>🏢 شهرها</td><td>' + cities.join('، ') + '</td></tr>' +
+            '<tr><td>🏘️ روستاها (' + vills.length + ')</td><td>' + vills.map(function(v){return v.name;}).join('، ') + '</td></tr>' +
+            '<tr><td>👥 جمعیت</td><td>' + pop.toLocaleString() + ' نفر</td></tr>' +
+            '<tr><td>👥 کارگروه‌ها</td><td>' + wgs.join('، ') + '</td></tr>' +
+            '</table>';
+    }
+    else if (type === 'village') {
         var v = villagesData.find(function(x){ return x.name === name; });
         if (v) {
-            title.innerText = '🏘️ ' + v.name;
-            content.innerHTML = '<table class="info-table"><tr><td>بخش</td><td>'+v.section+'</td></tr><tr><td>جمعیت</td><td>'+v.population.toLocaleString()+'</td></tr><tr><td>ظرفیت‌ها</td><td>'+v.capacities.replace(/\n/g,'<br>')+'</td></tr><tr><td>مشکلات</td><td>'+v.problems.replace(/\n/g,'<br>')+'</td></tr></table>';
+            var st = v.status === 'good' ? '🟢 خوب' : v.status === 'warning' ? '🟡 متوسط' : '🔴 ضعیف';
+            title.innerText = '🏘️ روستای ' + v.name;
+            content.innerHTML = '<table class="info-table">' +
+                '<tr><td>نام</td><td>'+v.name+'</td></tr>' +
+                '<tr><td>بخش</td><td>'+v.section+'</td></tr>' +
+                '<tr><td>جمعیت</td><td>'+v.population.toLocaleString()+' نفر</td></tr>' +
+                '<tr><td>خانوار</td><td>'+v.households.toLocaleString()+'</td></tr>' +
+                '<tr><td>شهدا</td><td>'+(v.martyrs||'-')+'</td></tr>' +
+                '<tr><td>وضعیت</td><td>'+st+'</td></tr>' +
+                '<tr><td>ظرفیت‌ها</td><td>'+v.capacities.replace(/\n/g,'<br>')+'</td></tr>' +
+                '<tr><td>مشکلات</td><td>'+v.problems.replace(/\n/g,'<br>')+'</td></tr>' +
+                '<tr><td>آرا</td><td>'+v.avg_vote.toLocaleString()+'</td></tr>' +
+                '</table>';
         }
-    } else if (type === 'city-detail') {
-        title.innerText = '🏢 شهر ' + name;
-        content.innerHTML = '<table class="info-table"><tr><td>نام</td><td>'+name+'</td></tr><tr><td>اطلاعات</td><td>در حال تکمیل...</td></tr></table>';
-    } else if (type === 'wg-detail') {
-        title.innerText = '👥 کارگروه ' + name;
-        content.innerHTML = '<table class="info-table"><tr><td>کارگروه</td><td>'+name+'</td></tr><tr><td>اعضا</td><td>در حال تکمیل...</td></tr></table>';
-    } else if (type === 'section') {
-        title.innerText = '📍 بخش ' + name;
-        var vills = villagesData.filter(function(v){ return v.section === name; });
-        content.innerHTML = '<table class="info-table"><tr><td>بخش</td><td>'+name+'</td></tr><tr><td>تعداد روستا</td><td>'+vills.length+'</td></tr></table>';
     }
+    else if (type === 'city') {
+        title.innerText = '🏢 شهر ' + name;
+        content.innerHTML = '<table class="info-table"><tr><td>نام شهر</td><td>'+name+'</td></tr><tr><td>اطلاعات</td><td>در حال تکمیل...</td></tr></table>';
+    }
+    else if (type === 'wg') {
+        var icons = {'بانوان':'👩‍👧‍👧','ورزشکاران':'⚽','طلاب':'📿','فرهنگیان':'📚','دانشجویان':'🎓','کشاورزان':'🌾','اصناف':'🏪','بازنشستگان':'👴','جوانان':'💪'};
+        title.innerText = icons[name] + ' کارگروه ' + name;
+        content.innerHTML = '<table class="info-table"><tr><td>کارگروه</td><td>'+icons[name]+' '+name+'</td></tr><tr><td>اعضا</td><td>در حال تکمیل...</td></tr></table>';
+    }
+    
     panel.scrollIntoView({ behavior: 'smooth' });
 }
 
