@@ -367,7 +367,26 @@ def add_influencer():
             save_data(villages)
             break
     return redirect(url_for('manage'))
-
+@app.route('/test-ai2')
+def test_ai2():
+    import requests
+    try:
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": "Bearer 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",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "google/gemini-2.0-flash-001",
+                "messages": [{"role": "user", "content": "سلام بگو سلام"}],
+                "max_tokens": 30
+            },
+            timeout=20
+        )
+        return f"Status: {response.status_code}<br>Response: {response.text[:300]}"
+    except Exception as e:
+        return f"Error: {str(e)}"
 # ============================================
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
