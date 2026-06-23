@@ -143,10 +143,11 @@ def village_profile(village_name):
     if village:
         return render_template('village.html', village=village, village_name=village_name)
     return "<h1>روستا یافت نشد</h1>"
-
 @app.route('/speech', methods=['GET', 'POST'])
 def generate_speech():
     if request.method == 'POST':
+        import requests
+        
         village_name = request.form.get('village_name', 'روستای عزیز')
         section = request.form.get('section', 'شبستر')
         martyrs = request.form.get('martyrs', '')
@@ -155,33 +156,58 @@ def generate_speech():
         key_people = request.form.get('key_people', '')
         opponent = request.form.get('opponent', '')
         
-        prompt = f"""یک سخنرانی انتخاباتی برای روستای {village_name} در بخش {section} بنویس.
-شهدا: {martyrs if martyrs else 'ندارد'}
-ظرفیت‌ها: {capacities if capacities else 'ندارد'}
-مشکلات: {problems if problems else 'ندارد'}
-با بسم الله شروع شود، یاد شهدا، ظرفیت‌ها، مشکلات، برنامه‌ها، و پایان امیدوارکننده."""
+        prompt = f"""یک سخنرانی انتخاباتی حرفه‌ای، احساسی و تأثیرگذار برای دکتر سهرابی کاندیدای نمایندگی شهرستان شبستر به زبان فارسی بنویس.
+
+اطلاعات روستا:
+- نام روستا: {village_name}
+- بخش: {section}
+- شهدا: {martyrs if martyrs else 'ندارد'}
+- ظرفیت‌ها: {capacities if capacities else 'در حال تکمیل'}
+- مشکلات: {problems if problems else 'در حال تکمیل'}
+- افراد حاضر: {key_people if key_people else 'مردم شریف روستا'}
+- رقیب: {opponent if opponent else 'ندارد'}
+
+سبک سخنرانی:
+- با بسم الله و سلام و درود شروع شود
+- یاد شهدا گرامی داشته شود
+- به ظرفیت‌های روستا اشاره شود
+- مشکلات با همدردی بیان شود
+- برنامه‌های عملی دکتر سهرابی ذکر شود
+- از رقیب به صورت غیرمستقیم انتقاد شود
+- پایان حماسی و امیدوارکننده باشد
+- لحن صمیمی، مردمی، متعهد و حرفه‌ای
+- حداکثر ۴۰۰ کلمه"""
 
         speech = ""
         use_ai = request.form.get('use_ai', 'off') == 'on'
         
         if use_ai:
             try:
-                API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct"
-                headers = {"Authorization": "Bearer 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"}
-                payload = {
-                    "inputs": f"<|user|>\n{prompt}\n<|assistant|>\n",
-                    "parameters": {"max_new_tokens": 500, "temperature": 0.7}
-                }
-                response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
+                response = requests.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers={
+                        "Authorization": "Bearer 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",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "google/gemini-2.0-flash-001",
+                        "messages": [
+                            {"role": "user", "content": prompt}
+                        ],
+                        "max_tokens": 600,
+                        "temperature": 0.8
+                    },
+                    timeout=30
+                )
+                
                 if response.status_code == 200:
                     result = response.json()
-                    if isinstance(result, list) and len(result) > 0:
-                        speech = result[0].get('generated_text', '')
-                        if '<|assistant|>' in speech:
-                            speech = speech.split('<|assistant|>')[-1].strip()
-                else:
+                    if 'choices' in result and len(result['choices']) > 0:
+                        speech = result['choices'][0]['message']['content'].strip()
+                
+                if not speech:
                     use_ai = False
-            except:
+            except Exception as e:
                 use_ai = False
         
         if not use_ai or not speech:
@@ -341,20 +367,7 @@ def add_influencer():
             save_data(villages)
             break
     return redirect(url_for('manage'))
-@app.route('/test-ai')
-def test_ai():
-    import requests
-    API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct"
-    headers = {"Authorization": "Bearer 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"}
-    payload = {
-        "inputs": "<|user|>\nسلام، حالت چطوره؟\n<|assistant|>\n",
-        "parameters": {"max_new_tokens": 50}
-    }
-    try:
-        response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
-        return f"Status: {response.status_code}<br>Response: {response.text[:500]}"
-    except Exception as e:
-        return f"Error: {str(e)}"
+
 # ============================================
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
