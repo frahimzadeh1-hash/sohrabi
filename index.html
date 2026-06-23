@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>شهرستان شبستر | دکتر سهرابی</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { font-family: Tahoma; }
+        body { background: #f5f5f5; min-height: 100vh; padding: 20px; }
+        
+        .top-bar { background: white; border-radius: 15px; padding: 15px 20px; margin-bottom: 20px; box-shadow: 0 3px 15px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .top-bar .title { font-size: 1.5rem; font-weight: bold; color: #1a1a1a; }
+        .nav-btn { background: white; color: #1a1a1a; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: bold; border: 2px solid #4a7c59; transition: 0.3s; font-size: 0.9rem; }
+        .nav-btn:hover { background: #4a7c59; color: white; }
+        
+        .main-card { background: white; border-radius: 20px; padding: 30px; margin: 20px auto; max-width: 1200px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        
+        .flowchart { text-align: center; padding: 20px 0; }
+        .tree-root { display: flex; flex-direction: column; align-items: center; }
+        .tree-branches { display: flex; justify-content: center; gap: 20px; margin-top: 15px; flex-wrap: wrap; }
+        .tree-branch { display: flex; flex-direction: column; align-items: center; min-width: 150px; }
+        
+        .node { border-radius: 12px; padding: 12px 22px; cursor: pointer; transition: 0.3s; font-weight: bold; text-align: center; display: inline-block; user-select: none; white-space: nowrap; }
+        .node:hover { transform: scale(1.05); }
+        
+        .node-root { background: #1a1a1a; color: white; font-size: 1.3rem; padding: 18px 35px; border: 4px solid #4a7c59; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .node-section { background: #4a7c59; color: white; font-size: 1.1rem; min-width: 130px; box-shadow: 0 4px 12px rgba(74,124,89,0.3); }
+        .node-workgroup { background: #8b7d3c; color: white; font-size: 1.1rem; min-width: 130px; box-shadow: 0 4px 12px rgba(139,125,60,0.3); }
+        .node-sub { padding: 8px 15px; font-size: 0.85rem; min-width: 80px; }
+        .node-city { background: #3c6b8b; color: white; }
+        .node-village { background: white; border: 2px solid #4a7c59; color: #1a1a1a; }
+        .node-wg { background: #fef3c7; border: 2px solid #8b7d3c; color: #1a1a1a; }
+        
+        .connector-line { width: 2px; height: 20px; background: #bbb; margin: 0 auto; }
+        
+        .branch-content { display: none; flex-direction: column; align-items: center; }
+        .branch-content.open { display: flex; }
+        
+        .sub-items { display: none; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 8px; padding: 10px; background: #f9f9f9; border-radius: 10px; }
+        .sub-items.open { display: flex; }
+        .sub-items.list { flex-direction: column; align-items: center; max-height: 180px; overflow-y: auto; min-width: 140px; }
+        
+        .info-panel { background: #f9f9f9; border-radius: 15px; padding: 20px; margin-top: 25px; border: 2px solid #4a7c59; display: none; }
+        .info-panel.active { display: block; }
+        .info-panel h3 { color: #4a7c59; margin-bottom: 15px; }
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 10px; border-bottom: 1px solid #ddd; }
+        .info-table td:first-child { font-weight: bold; width: 30%; color: #1a1a1a; background: #eee; }
+        
+        .stat-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .stat-box { background: white; border-radius: 12px; padding: 15px 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-width: 120px; }
+        .stat-box .num { font-size: 1.8rem; font-weight: bold; }
+        .green { color: #4a7c59; } .yellow { color: #8b7d3c; } .red { color: #8b3c3c; }
+        .arrow { font-size: 0.7rem; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div style="display:flex; align-items:center; gap:15px;">
+        <div style="width:35px; height:55px; border-radius:5px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+            <div style="flex:1; background:#4a7c59;"></div>
+            <div style="flex:1; background:#ffffff; display:flex; align-items:center; justify-content:center;">
+                <span style="font-size:0.7rem; color:#8b3c3c;">☫</span>
+            </div>
+            <div style="flex:1; background:#8b3c3c;"></div>
+        </div>
+        <span class="title">🇮🇷 شهرستان شبستر</span>
+    </div>
+    <div>
+        <a href="/" class="nav-btn">📊 داشبورد</a>
+        <a href="/map" class="nav-btn">🗺️ نقشه</a>
+        <a href="/contacts" class="nav-btn">📞 تلفن</a>
+        <a href="/speech" class="nav-btn">🎤 سخنرانی</a>
+        <a href="/manage" class="nav-btn">📝 مدیریت</a>
+        <a href="/war-room" class="nav-btn">🎯 اتاق جنگ</a>
+    </div>
+</div>
+
+<div class="stat-row">
+    <div class="stat-box"><small>🏘️ روستاها</small><div class="num green">{{ total_villages }}</div></div>
+    <div class="stat-box"><small>👥 جمعیت</small><div class="num green">{{ "{:,}".format(total_population) }}</div></div>
+    <div class="stat-box"><small>🏠 خانوار</small><div class="num yellow">{{ "{:,}".format(total_households) }}</div></div>
+    <div class="stat-box"><small>🗳️ کل آرا</small><div class="num red">{{ "{:,}".format(total_avg_vote) }}</div></div>
+</div>
+
+<div class="main-card">
+    <div class="flowchart">
+        <div class="tree-root">
+            <span class="node node-root" onclick="showInfo('shabestar')">🏙️ شهرستان شبستر</span>
+            <div class="connector-line"></div>
+            
+            <div class="tree-branches">
+                
+                <!-- ========== صوفیان ========== -->
+                <div class="tree-branch">
+                    <span class="node node-section" onclick="showInfo('section','صوفیان'); toggleBranch('soofian')">📍 صوفیان <span class="arrow">▼</span></span>
+                    <div class="connector-line"></div>
+                    <div class="branch-content" id="branch-soofian">
+                        <div class="sub-items open">
+                            <span class="node node-sub node-city" onclick="toggleCities('soofian')">🏢 شهرها <span class="arrow">▼</span></span>
+                            <span class="node node-sub node-village" onclick="toggleVillages('soofian')">🏘️ روستاها <span class="arrow">▼</span></span>
+                            <span class="node node-sub node-wg" onclick="toggleWorkgroups('soofian')">👥 کارگروه‌ها <span class="arrow">▼</span></span>
+                        </div>
+                        <div class="sub-items list" id="cities-soofian">
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','صوفیان')">🏢 صوفیان</span>
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','شندآباد')">🏢 شندآباد</span>
+                        </div>
+                        <div class="sub-items list" id="villages-soofian">
+                            {% set soofian = villages|selectattr('section', 'equalto', 'صوفیان')|list %}
+                            {% for v in soofian %}
+                            <span class="node node-sub node-village" onclick="showInfo('village','{{ v.name }}')">{{ v.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="sub-items" id="workgroups-soofian">
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بانوان')">👩‍👧‍👧 بانوان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','ورزشکاران')">⚽ ورزش</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','طلاب')">📿 طلاب</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','فرهنگیان')">📚 فرهنگیان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','دانشجویان')">🎓 دانشجویان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','کشاورزان')">🌾 کشاورزان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','اصناف')">🏪 اصناف</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بازنشستگان')">👴 بازنشستگان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','جوانان')">💪 جوانان</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== مرکزی ========== -->
+                <div class="tree-branch">
+                    <span class="node node-section" onclick="showInfo('section','مرکزی'); toggleBranch('markazi')">📍 مرکزی <span class="arrow">▼</span></span>
+                    <div class="connector-line"></div>
+                    <div class="branch-content" id="branch-markazi">
+                        <div class="sub-items open">
+                            <span class="node node-sub node-city" onclick="toggleCities('markazi')">🏢 شهرها <span class="arrow">▼</span></span>
+                            <span class="node node-sub node-village" onclick="toggleVillages('markazi')">🏘️ روستاها <span class="arrow">▼</span></span>
+                            <span class="node node-sub node-wg" onclick="toggleWorkgroups('markazi')">👥 کارگروه‌ها <span class="arrow">▼</span></span>
+                        </div>
+                        <div class="sub-items list" id="cities-markazi">
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','شبستر')">🏢 شبستر</span>
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','وایقان')">🏢 وایقان</span>
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','کوزه‌کنان')">🏢 کوزه‌کنان</span>
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','خامنه')">🏢 خامنه</span>
+                        </div>
+                        <div class="sub-items list" id="villages-markazi">
+                            {% set markazi = villages|selectattr('section', 'equalto', 'مرکزی')|list %}
+                            {% for v in markazi %}
+                            <span class="node node-sub node-village" onclick="showInfo('village','{{ v.name }}')">{{ v.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="sub-items" id="workgroups-markazi">
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بانوان')">👩‍👧‍👧 بانوان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','ورزشکاران')">⚽ ورزش</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','طلاب')">📿 طلاب</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','فرهنگیان')">📚 فرهنگیان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','دانشجویان')">🎓 دانشجویان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','کشاورزان')">🌾 کشاورزان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','اصناف')">🏪 اصناف</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بازنشستگان')">👴 بازنشستگان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','جوانان')">💪 جوانان</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== تسوج ========== -->
+                <div class="tree-branch">
+                    <span class="node node-section" onclick="showInfo('section','تسوج'); toggleBranch('tasouj')">📍 تسوج <span class="arrow">▼</span></span>
+                    <div class="connector-line"></div>
+                    <div class="branch-content" id="branch-tasouj">
+                        <div class="sub-items open">
+                            <span class="node node-sub node-city" onclick="toggleCities('tasouj')">🏢 شهرها <span class="arrow">▼</span></span>
+                            <span class="node node-sub node-village" onclick="toggleVillages('tasouj')">🏘️ روستاها <span class="arrow">▼</span></span>
+                            <span class="node node-sub node-wg" onclick="toggleWorkgroups('tasouj')">👥 کارگروه‌ها <span class="arrow">▼</span></span>
+                        </div>
+                        <div class="sub-items list" id="cities-tasouj">
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','تسوج')">🏢 تسوج</span>
+                            <span class="node node-sub node-city" onclick="showInfo('city-detail','شرفخانه')">🏢 شرفخانه</span>
+                        </div>
+                        <div class="sub-items list" id="villages-tasouj">
+                            {% set tasouj = villages|selectattr('section', 'equalto', 'تسوج')|list %}
+                            {% for v in tasouj %}
+                            <span class="node node-sub node-village" onclick="showInfo('village','{{ v.name }}')">{{ v.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="sub-items" id="workgroups-tasouj">
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بانوان')">👩‍👧‍👧 بانوان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','ورزشکاران')">⚽ ورزش</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','طلاب')">📿 طلاب</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','فرهنگیان')">📚 فرهنگیان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','دانشجویان')">🎓 دانشجویان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','کشاورزان')">🌾 کشاورزان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','اصناف')">🏪 اصناف</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بازنشستگان')">👴 بازنشستگان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','جوانان')">💪 جوانان</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ========== کارگروه‌های ستادی ========== -->
+                <div class="tree-branch">
+                    <span class="node node-workgroup" onclick="showInfo('main-wg'); toggleBranch('main-wg')">👥 کارگروه‌های ستادی <span class="arrow">▼</span></span>
+                    <div class="connector-line"></div>
+                    <div class="branch-content" id="branch-main-wg">
+                        <div class="sub-items open">
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بانوان')">👩‍👧‍👧 بانوان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','ورزشکاران')">⚽ ورزش</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','طلاب')">📿 طلاب</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','فرهنگیان')">📚 فرهنگیان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','دانشجویان')">🎓 دانشجویان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','کشاورزان')">🌾 کشاورزان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','اصناف')">🏪 اصناف</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','بازنشستگان')">👴 بازنشستگان</span>
+                            <span class="node node-sub node-wg" onclick="showInfo('wg-detail','جوانان')">💪 جوانان</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-panel" id="infoPanel">
+        <h3 id="infoTitle">📋 اطلاعات</h3>
+        <div id="infoContent"></div>
+    </div>
+    
+    <div style="display:flex; gap:15px; margin-top:25px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:300px;">
+            <h4 style="text-align:center;">📊 وضعیت کمپین</h4>
+            <canvas id="statusChart"></canvas>
+        </div>
+        <div style="flex:1; min-width:300px;">
+            <h4 style="text-align:center;">📈 آرا به تفکیک بخش</h4>
+            <canvas id="sectionChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleBranch(name) { document.getElementById('branch-'+name).classList.toggle('open'); }
+function toggleCities(s) { document.getElementById('cities-'+s).classList.toggle('open'); }
+function toggleVillages(s) { document.getElementById('villages-'+s).classList.toggle('open'); }
+function toggleWorkgroups(s) { document.getElementById('workgroups-'+s).classList.toggle('open'); }
+
+var villagesData = {{ villages|tojson }};
+var infoPanel = document.getElementById('infoPanel');
+var infoTitle = document.getElementById('infoTitle');
+var infoContent = document.getElementById('infoContent');
+
+function showInfo(type, name) {
+    infoPanel.classList.add('active');
+    
+    // شهرستان شبستر
+    if (type === 'shabestar') {
+        infoTitle.innerText = '🏙️ شهرستان شبستر';
+        infoContent.innerHTML = `<table class="info-table">
+            <tr><td>نام شهرستان</td><td>شبستر</td></tr>
+            <tr><td>استان</td><td>آذربایجان شرقی</td></tr>
+            <tr><td>بخش‌ها</td><td>صوفیان - مرکزی - تسوج</td></tr>
+            <tr><td>شهرها</td><td>شبستر، صوفیان، تسوج، وایقان، کوزه‌کنان، خامنه، شندآباد، شرفخانه</td></tr>
+            <tr><td>کل روستاها</td><td>{{ total_villages }} روستا</td></tr>
+            <tr><td>جمعیت کل</td><td>{{ "{:,}".format(total_population) }} نفر</td></tr>
+            <tr><td>تعداد خانوار</td><td>{{ "{:,}".format(total_households) }} خانوار</td></tr></table>`;
+    }
+    
+    // بخش (صوفیان / مرکزی / تسوج)
+    else if (type === 'section') {
+        var vills = villagesData.filter(function(v){ return v.section === name; });
+        var pop = vills.reduce(function(s,v){ return s+v.population; }, 0);
+        var votes = vills.reduce(function(s,v){ return s+v.avg_vote; }, 0);
+        var cities = { 'صوفیان': 'صوفیان، شندآباد', 'مرکزی': 'شبستر، وایقان، کوزه‌کنان، خامنه', 'تسوج': 'تسوج، شرفخانه' };
+        infoTitle.innerText = '📍 بخش ' + name;
+        infoContent.innerHTML = `<table class="info-table">
+            <tr><td>نام بخش</td><td>${name}</td></tr>
+            <tr><td>شهرها</td><td>${cities[name]}</td></tr>
+            <tr><td>تعداد روستا</td><td>${vills.length} روستا</td></tr>
+            <tr><td>جمعیت کل</td><td>${pop.toLocaleString()} نفر</td></tr>
+            <tr><td>کل آرا</td><td>${votes.toLocaleString()} رأی</td></tr>
+            <tr><td>روستاها</td><td>${vills.map(function(v){ return v.name; }).join('، ') || '-'}</td></tr>
+            <tr><td>کارگروه‌ها</td><td>بانوان، ورزشکاران، طلاب، فرهنگیان، دانشجویان، کشاورزان، اصناف، بازنشستگان، جوانان</td></tr></table>`;
+    }
+    
+    // کارگروه‌های ستادی
+    else if (type === 'main-wg') {
+        infoTitle.innerText = '👥 کارگروه‌های ستادی';
+        infoContent.innerHTML = `<table class="info-table">
+            <tr><td>تعداد کارگروه‌ها</td><td>۹ کارگروه</td></tr>
+            <tr><td>لیست کارگروه‌ها</td><td>بانوان، ورزشکاران، طلاب، فرهنگیان، دانشجویان، کشاورزان، اصناف، بازنشستگان، جوانان</td></tr>
+            <tr><td>مسئول هماهنگی</td><td>در حال تکمیل...</td></tr></table>`;
+    }
+    
+    // شهر
+    else if (type === 'city-detail') {
+        var cityInfo = {
+            'شبستر':'مرکز شهرستان، قطب اداری و دانشگاهی','صوفیان':'مرکز ترانزیت ریلی و جاده‌ای، شهرک صنعتی',
+            'تسوج':'قطب باغات زردآلو و گردو، منطقه گردشگری','وایقان':'شهر ملی باسلوق، قطب شیرینی‌جات',
+            'کوزه‌کنان':'شهر تاریخی با قدمت ۷ هزار ساله','خامنه':'باغات وسیع زردآلو و آلبالو',
+            'شندآباد':'شهرک صنعتی خصوصی، تولید پوشاک','شرفخانه':'بندر سابق دریاچه ارومیه'
+        };
+        infoTitle.innerText = '🏢 شهر ' + name;
+        infoContent.innerHTML = `<table class="info-table">
+            <tr><td>نام شهر</td><td>${name}</td></tr>
+            <tr><td>توضیحات</td><td>${cityInfo[name] || 'در حال تکمیل...'}</td></tr>
+            <tr><td>افراد تأثیرگذار</td><td>در حال تکمیل...</td></tr></table>`;
+    }
+    
+    // روستا
+    else if (type === 'village') {
+        var v = villagesData.find(function(x){ return x.name === name; });
+        if (v) {
+            var st = v.status === 'good' ? '🟢 خوب' : v.status === 'warning' ? '🟡 متوسط' : '🔴 ضعیف';
+            infoTitle.innerText = '🏘️ روستای ' + v.name;
+            infoContent.innerHTML = `<table class="info-table">
+                <tr><td>نام روستا</td><td>${v.name}</td></tr>
+                <tr><td>بخش</td><td>${v.section}</td></tr>
+                <tr><td>جمعیت</td><td>${v.population.toLocaleString()} نفر</td></tr>
+                <tr><td>تعداد خانوار</td><td>${v.households.toLocaleString()}</td></tr>
+                <tr><td>شهدا</td><td>${v.martyrs || '-'}</td></tr>
+                <tr><td>وضعیت کمپین</td><td>${st}</td></tr>
+                <tr><td>ظرفیت‌ها</td><td>${v.capacities.replace(/\n/g,'<br>')}</td></tr>
+                <tr><td>مشکلات</td><td>${v.problems.replace(/\n/g,'<br>')}</td></tr>
+                <tr><td>میانگین رأی</td><td>${v.avg_vote.toLocaleString()}</td></tr>
+                <tr><td colspan="2"><a href="/village/${v.name}" style="color:#4a7c59;">👁️ پروفایل کامل</a></td></tr></table>`;
+        }
+    }
+    
+    // کارگروه
+    else if (type === 'wg-detail') {
+        var icons = {'بانوان':'👩‍👧‍👧','ورزشکاران':'⚽','طلاب':'📿','فرهنگیان':'📚','دانشجویان':'🎓','کشاورزان':'🌾','اصناف':'🏪','بازنشستگان':'👴','جوانان':'💪'};
+        var tasks = {'بانوان':'فعالیت‌های فرهنگی بانوان، اشتغال خانگی، بیمه','ورزشکاران':'مسابقات محلی، رفع مشکلات باشگاه‌ها','طلاب':'ارتباط با مساجد و هیئات مذهبی','فرهنگیان':'ارتباط با معلمان، برنامه‌های آموزشی','دانشجویان':'فضای مجازی، تبلیغات مدرن','کشاورزان':'پیگیری بیمه، بازار فروش','اصناف':'مشکلات مالیاتی و صنفی','بازنشستگان':'حقوق و مزایا، برنامه‌های رفاهی','جوانان':'اشتغال، مسکن، ازدواج'};
+        infoTitle.innerText = icons[name] + ' کارگروه ' + name;
+        infoContent.innerHTML = `<table class="info-table">
+            <tr><td>نام</td><td>${icons[name]} ${name}</td></tr>
+            <tr><td>وظایف</td><td>${tasks[name]}</td></tr>
+            <tr><td>اعضا</td><td>در حال تکمیل...</td></tr></table>`;
+    }
+    
+    infoPanel.scrollIntoView({ behavior: 'smooth' });
+}
+
+new Chart(document.getElementById('statusChart'), { type: 'doughnut', data: { labels: ['خوب','متوسط','ضعیف'], datasets: [{ data: [{{ good }},{{ warning }},{{ danger }}], backgroundColor: ['#4a7c59','#8b7d3c','#8b3c3c'], borderColor:'white', borderWidth:3 }] }, options: { plugins: { legend: { position:'bottom' } } } });
+new Chart(document.getElementById('sectionChart'), { type: 'bar', data: { labels: [{% for s in sections %}'{{ s }}',{% endfor %}], datasets: [{ label:'تعداد روستا', data:[{% for s in sections.values() %}{{ s.count }},{% endfor %}], backgroundColor:'#4a7c59', borderRadius:8 },{ label:'مجموع آرا', data:[{% for s in sections.values() %}{{ s.votes }},{% endfor %}], backgroundColor:'#8b7d3c', borderRadius:8 }] }, options: { plugins: { legend: { position:'bottom' } }, scales: { y: { beginAtZero:true } } } });
+</script>
+</body>
+</html>
