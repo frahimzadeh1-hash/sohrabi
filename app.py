@@ -374,7 +374,7 @@ def test_ai2():
         response = requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "Authorization": "Bearer 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",,
+               "Authorization": "Bearer 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",
                 "Content-Type": "application/json"
             },
             json={
