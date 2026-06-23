@@ -1,24 +1,65 @@
-{% extends "base.html" %}
-{% block content %}
-
-<div class="card">
-    <div class="card-header bg-info text-white">
-        <h4>🏘️ پروفایل روستای {{ village_name }}</h4>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ village_name }} - پروفایل روستا</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { font-family: Tahoma; }
+        body { background: #f5f5f5; padding: 20px; }
+        .card { background: white; border-radius: 15px; padding: 25px; margin: 15px auto; max-width: 800px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .header { background: #1a1a1a; padding: 20px; text-align: center; border-radius: 15px; margin-bottom: 20px; border: 2px solid #4a7c59; }
+        .header h2 { color: #4a7c59; margin: 0; }
+        .header a { color: #ccc; margin: 0 10px; text-decoration: none; }
+        .header a:hover { color: #4a7c59; }
+        .flag-strip { height: 3px; background: linear-gradient(90deg, #4a7c59 33%, white 33%, white 66%, #8b3c3c 66%); max-width: 150px; margin: 5px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1a1a1a; color: white; padding: 12px; text-align: right; width: 30%; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; }
+        .badge { padding: 5px 12px; border-radius: 20px; color: white; font-size: 0.85rem; }
+        .badge-good { background: #4a7c59; }
+        .badge-warning { background: #8b7d3c; }
+        .badge-danger { background: #8b3c3c; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div style="font-size:2rem;">🇮🇷</div>
+        <div class="flag-strip"></div>
+        <h2>🏘️ {{ village_name }}</h2>
+        <a href="/">📊 داشبورد</a> | 
+        <a href="/map">🗺️ نقشه</a> | 
+        <a href="/contacts">📞 تلفن</a> |
+        <a href="/speech">🎤 سخنرانی</a> |
+        <a href="/manage">📝 مدیریت</a>
     </div>
-    <div class="card-body">
-        <table class="table table-bordered">
-            {% for key, value in village.items() %}
-            <tr>
-                <th>{{ key }}</th>
-                <td>{{ value }}</td>
+    
+    <div class="card">
+        <table>
+            <tr><th>نام روستا</th><td>{{ village.name }}</td></tr>
+            <tr><th>بخش</th><td>{{ village.section }}</td></tr>
+            <tr><th>جمعیت</th><td>{{ "{:,}".format(village.population) }} نفر</td></tr>
+            <tr><th>تعداد خانوار</th><td>{{ "{:,}".format(village.households) }}</td></tr>
+            <tr><th>شهدا</th><td>{{ village.martyrs if village.martyrs else '-' }}</td></tr>
+            <tr><th>وضعیت کمپین</th>
+                <td>
+                    {% if village.status == 'good' %}<span class="badge badge-good">🟢 خوب</span>
+                    {% elif village.status == 'warning' %}<span class="badge badge-warning">🟡 متوسط</span>
+                    {% else %}<span class="badge badge-danger">🔴 ضعیف</span>
+                    {% endif %}
+                </td>
             </tr>
-            {% endfor %}
+            <tr><th>ظرفیت‌ها</th><td>{{ village.capacities.replace('\n', '<br>')|safe if village.capacities else '-' }}</td></tr>
+            <tr><th>مشکلات</th><td>{{ village.problems.replace('\n', '<br>')|safe if village.problems else '-' }}</td></tr>
+            <tr><th>میانگین رأی ۳ دوره</th><td>{{ "{:,}".format(village.avg_vote) }} رأی</td></tr>
+            <tr><th>کاندیدای رقیب</th><td>{{ village.opponent if village.opponent else '-' }}</td></tr>
         </table>
+        
+        <div style="text-align:center; margin-top:20px;">
+            <a href="/speech" style="background:#4a7c59; color:white; padding:12px 25px; border-radius:8px; text-decoration:none;">🎤 تولید سخنرانی برای {{ village_name }}</a>
+            <br><br>
+            <a href="/map">🗺️ بازگشت به نقشه</a>
+        </div>
     </div>
-</div>
-
-<div class="text-center mt-3">
-    <a href="/speech" class="btn btn-success btn-lg">🎤 تولید سخنرانی برای {{ village_name }}</a>
-</div>
-
-{% endblock %}
+</body>
+</html>
