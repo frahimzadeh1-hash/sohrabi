@@ -9,7 +9,7 @@
         body { background: #f5f5f5; padding: 20px; }
         .card { background: white; border-radius: 15px; padding: 25px; margin: 15px auto; max-width: 1300px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         .header { background: #1a1a1a; padding: 20px; text-align: center; border-radius: 15px; margin-bottom: 20px; border: 2px solid #4a7c59; }
-        .header h2 { color: #4a7c59; }
+        .header h2 { color: #4a7c59; margin: 0; }
         .header a { color: #ccc; margin: 0 10px; text-decoration: none; }
         .header a:hover { color: #4a7c59; }
         .flag-strip { height: 3px; background: linear-gradient(90deg, #4a7c59 33%, white 33%, white 66%, #8b3c3c 66%); max-width: 150px; margin: 5px auto; }
@@ -39,8 +39,8 @@
         .contacts-panel { margin-top: 25px; }
         .contacts-panel h3 { color: #4a7c59; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #1a1a1a; color: white; padding: 10px; font-size: 0.85rem; }
-        td { padding: 8px; border-bottom: 1px solid #ddd; text-align: center; font-size: 0.85rem; }
+        th { background: #1a1a1a; color: white; padding: 10px; font-size: 0.8rem; }
+        td { padding: 8px; border-bottom: 1px solid #ddd; text-align: center; font-size: 0.8rem; }
         tr:hover { background: #f9f9f9; }
         .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; color: white; }
         .badge-good { background: #4a7c59; }
@@ -120,25 +120,55 @@
         <div class="contacts-panel">
             <h3 id="panelTitle">📋 همه مخاطبین</h3>
             <input type="text" id="searchBox" placeholder="🔍 جستجو..." style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px;" onkeyup="searchNow()">
-            <table>
-                <thead><tr><th>#</th><th>بخش</th><th>شهر</th><th>روستا</th><th>کارگروه</th><th>نام</th><th>شماره</th><th>نقش</th><th>وضعیت</th><th>📞</th></tr></thead>
-                <tbody id="contactsBody">
-                    {% for c in contacts %}
-                    <tr data-section="{{ c.section }}" data-city="{{ c.city }}" data-village="{{ c.village }}" data-workgroup="{{ c.workgroup }}">
-                        <td>{{ loop.index }}</td>
-                        <td>{{ c.section }}</td>
-                        <td>{{ c.city if c.city else '-' }}</td>
-                        <td>{{ c.village }}</td>
-                        <td>{{ c.workgroup if c.workgroup else '-' }}</td>
-                        <td><strong>{{ c.name }}</strong></td>
-                        <td dir="ltr">{{ c.phone }}</td>
-                        <td>{{ c.role }}</td>
-                        <td>{% if c.status == 'موافق' %}<span class="badge badge-good">موافق</span>{% elif c.status == 'مردد' %}<span class="badge badge-warning">مردد</span>{% else %}<span class="badge badge-danger">مخالف</span>{% endif %}</td>
-                        <td><button class="btn-call" onclick="callNow('{{ c.phone }}', '{{ c.name }}')">📞</button></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>بخش</th>
+                            <th>شهر</th>
+                            <th>روستا</th>
+                            <th>کارگروه</th>
+                            <th>نام</th>
+                            <th>شماره</th>
+                            <th>نقش</th>
+                            <th>وضعیت</th>
+                            <th>معرف</th>
+                            <th>شماره معرف</th>
+                            <th>آخرین تماس</th>
+                            <th>نتیجه آخرین تماس</th>
+                            <th>تماس بعدی</th>
+                            <th>📞</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsBody">
+                        {% for c in contacts %}
+                        <tr data-section="{{ c.section }}" data-city="{{ c.city }}" data-village="{{ c.village }}" data-workgroup="{{ c.workgroup }}">
+                            <td>{{ loop.index }}</td>
+                            <td>{{ c.section }}</td>
+                            <td>{{ c.city if c.city else '-' }}</td>
+                            <td>{{ c.village }}</td>
+                            <td>{{ c.workgroup if c.workgroup else '-' }}</td>
+                            <td><strong>{{ c.name }}</strong></td>
+                            <td dir="ltr">{{ c.phone }}</td>
+                            <td>{{ c.role }}</td>
+                            <td>
+                                {% if c.status == 'موافق' %}<span class="badge badge-good">موافق</span>
+                                {% elif c.status == 'مردد' %}<span class="badge badge-warning">مردد</span>
+                                {% else %}<span class="badge badge-danger">مخالف</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ c.referrer if c.referrer else '-' }}</td>
+                            <td dir="ltr">{{ c.referrer_phone if c.referrer_phone else '-' }}</td>
+                            <td>{{ c.last_call_date if c.last_call_date else '-' }}</td>
+                            <td>{{ c.last_call_result if c.last_call_result else '-' }}</td>
+                            <td>{% if c.next_call_date %}<strong style="color:#f59e0b;">📅 {{ c.next_call_date }}</strong>{% else %}-{% endif %}</td>
+                            <td><button class="btn-call" onclick="callNow('{{ c.phone }}', '{{ c.name }}')">📞</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             <p style="margin-top:10px; color:#666;">نمایش <strong id="shownCount">0</strong> از <strong id="totalCount">0</strong> مخاطب</p>
         </div>
     </div>
